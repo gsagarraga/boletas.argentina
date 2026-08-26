@@ -122,7 +122,8 @@
   .province.active{ stroke:#fff; stroke-width:2.6; filter: brightness(1.12); }
 
   .caba-pin{ cursor:pointer; }
-  .caba-dot{ fill: var(--electronica); stroke:#0a0a0a; stroke-width:1.4; transition: filter .15s ease, opacity .18s ease, r .15s ease; }
+  .caba-dot{ fill: var(--electronica); stroke:none; transition: filter .15s ease, opacity .18s ease; }
+  .caba-halo{ fill: var(--bg); stroke:none; opacity:1; }
   .caba-pin:hover .caba-dot{ filter: brightness(1.25); }
   .caba-pin.faded{ opacity:.2; }
 
@@ -139,7 +140,7 @@
   .tooltip.show{ opacity:1; }
 
   .credit{
-    text-align:center; margin-top:10px; font-size:11.5px; color: var(--muted-2);
+    text-align:center; margin-top:14px; font-size:11.5px; color: var(--muted-2); line-height:1.6;
   }
   .credit b{ color:var(--muted); }
 
@@ -271,14 +272,6 @@
       </div>
     </div>
 
-    <p class="hint">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
-      Tocá una franja de color para filtrar el mapa, o una provincia para ver su ficha completa.
-    </p>
-
-    <div class="note">
-      <b style="color:var(--muted)">Fuente:</b> elaboración propia según la legislación electoral de cada provincia al 20 de agosto de 2026. Autor: Gonzalo Sagarraga.
-    </div>
   </aside>
 
   <!-- ============ MAP ============ -->
@@ -290,7 +283,10 @@
     <div class="mapcanvas">
       <svg id="mapsvg" viewBox="-10 -644 816 1885" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
-    <p class="credit">Mapa geográfico real — tocá o pasá el mouse sobre cada provincia.</p>
+    <p class="credit">
+      Tocá una franja de color para filtrar el mapa, o una provincia para ver su ficha completa.<br>
+      <b style="color:var(--muted)">Fuente:</b> elaboración propia según la legislación electoral de cada provincia al 20 de agosto de 2026. Autor: Gonzalo Sagarraga.
+    </p>
   </main>
 
 </div>
@@ -668,8 +664,13 @@ PROVINCES.filter(p => p.id !== 'caba').forEach(p => {
   g.dataset.id = 'caba';
   g.dataset.cat = 'electronica';
 
+  const halo = document.createElementNS(SVG_NS,'circle');
+  halo.setAttribute('cx', 554); halo.setAttribute('cy', 78); halo.setAttribute('r', 14);
+  halo.setAttribute('class','caba-halo');
+  g.appendChild(halo);
+
   const dot = document.createElementNS(SVG_NS,'circle');
-  dot.setAttribute('cx', 585.1); dot.setAttribute('cy', 101.8); dot.setAttribute('r', 4.5);
+  dot.setAttribute('cx', 554); dot.setAttribute('cy', 78); dot.setAttribute('r', 11);
   dot.setAttribute('class','caba-dot');
   g.appendChild(dot);
 
