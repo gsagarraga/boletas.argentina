@@ -72,10 +72,10 @@
     color: var(--muted); font-size:14px; line-height:1.55; margin: 16px 0 28px;
   }
 
-  .legend{ display:flex; flex-direction:column; gap:10px; margin-bottom: 26px; }
+  .legend{ display:flex; flex-direction:column; gap:8px; margin-bottom: 26px; }
   .legend-item{
-    display:flex; align-items:flex-start; gap:12px;
-    padding: 12px 13px; border-radius: 10px;
+    display:flex; align-items:center; gap:12px;
+    padding: 9px 13px; border-radius: 10px;
     border: 1px solid var(--line-soft);
     background: #0d0d0d;
     cursor:pointer;
@@ -83,7 +83,7 @@
   }
   .legend-item:hover{ border-color: var(--muted-2); transform: translateX(2px); }
   .legend-item.dim{ opacity:.4; }
-  .swatch{ width:14px; height:14px; border-radius:4px; margin-top:3px; flex:none; }
+  .swatch{ width:14px; height:14px; border-radius:4px; flex:none; }
   .legend-text b{ display:block; font-size:13.5px; font-weight:600; }
   .legend-text small{ display:block; color:var(--muted); font-size:12px; margin-top:2px; line-height:1.4;}
   .legend-count{
@@ -225,28 +225,30 @@
 
   .compare-grid{
     flex:1; display:grid; grid-template-columns: 1fr auto 1fr;
-    min-height:0;
+    min-height:0; min-width:0;
   }
   .compare-divider{
     position:relative; width:1px; background: var(--line);
     display:flex; align-items:center; justify-content:center;
+    flex:none;
   }
   .compare-divider span{
     position:absolute; background: var(--bg); color:var(--muted-2);
     border:1px solid var(--line); border-radius:100px;
     font-family:'Rubik Mono One', monospace; font-size:10.5px;
     padding:5px 9px; letter-spacing:.05em;
+    white-space:nowrap;
   }
 
   .compare-col{
-    display:flex; flex-direction:column; min-height:0;
+    display:flex; flex-direction:column; min-height:0; min-width:0;
     padding: 28px 32px 20px;
   }
   .compare-col-head{
     display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px;
   }
   .var-select{
-    flex:1; max-width:100%; appearance:none;
+    flex:1; min-width:0; max-width:100%; appearance:none;
     background: #0d0d0d url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%239a9a9a" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>') no-repeat right 12px center;
     color: var(--text); border:1px solid var(--line); border-radius:9px;
     padding:10px 34px 10px 13px; font-family:'Rubik', sans-serif; font-size:13.5px; font-weight:600;
@@ -367,7 +369,9 @@
 
   @media (max-width: 920px){
     .app{ grid-template-columns: 1fr; }
-    .sidebar{ border-right:none; border-bottom:1px solid var(--line); padding: 28px 22px; }
+    .sidebar{ border-right:none; border-bottom:1px solid var(--line); padding: 24px 20px; }
+    h1{ font-size:24px; }
+    .lede{ margin: 10px 0 18px; }
     .mapwrap{ padding: 18px 10px; }
     #mapsvg{ max-height:64vh; }
     .panel-inner{ padding: 80px 22px 60px; }
@@ -395,17 +399,17 @@
     <div class="legend" id="legend">
       <div class="legend-item" data-filter="bup">
         <span class="swatch" style="background:var(--bup)"></span>
-        <span class="legend-text"><b>Boleta Única de Papel</b><small>Un solo instrumento impreso con todas las listas</small></span>
+        <span class="legend-text"><b>Boleta Única de Papel</b></span>
         <span class="legend-count" id="count-bup"></span>
       </div>
       <div class="legend-item" data-filter="electronica">
         <span class="swatch" style="background:var(--electronica)"></span>
-        <span class="legend-text"><b>Boleta Única Electrónica</b><small>Emisión asistida por dispositivo, impresión del voto</small></span>
+        <span class="legend-text"><b>Boleta Única Electrónica</b></span>
         <span class="legend-count" id="count-electronica"></span>
       </div>
       <div class="legend-item" data-filter="partidaria">
         <span class="swatch" style="background:var(--partidaria)"></span>
-        <span class="legend-text"><b>Boleta partidaria</b><small>Boleta impresa y oficializada por cada agrupación</small></span>
+        <span class="legend-text"><b>Boleta partidaria</b></span>
         <span class="legend-count" id="count-partidaria"></span>
       </div>
     </div>
