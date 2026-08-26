@@ -22,18 +22,18 @@
     --electronica-soft: rgba(52,201,143,0.12);
     --partidaria: #5b8ff2;
     --partidaria-soft: rgba(91,143,242,0.12);
-    --bicameral: #f2795c;
-    --unicameral: #7c83fd;
-    --si: #3ddc97;
-    --no: #ef5f67;
-    --justicialista: #58c4f2;
-    --pro: #f2cd3d;
-    --ucr: #e2483e;
-    --provincial: #3fae56;
-    --fpv: #58c4f2;
-    --cambiemos: #f2cd3d;
-    --otro: #9a9a9a;
-    --lla: #a06cd5;
+    --bicameral: #dd6d4b;
+    --unicameral: #9079d8;
+    --si: #47c27a;
+    --no: #d4545e;
+    --justicialista: #5fb3dd;
+    --pro: #e1b347;
+    --ucr: #d4545e;
+    --provincial: #47c27a;
+    --fpv: #5fb3dd;
+    --cambiemos: #e1b347;
+    --otro: #949494;
+    --lla: #9775d1;
     --shadow: 0 20px 60px rgba(0,0,0,0.6);
   }
   *{ box-sizing: border-box; }
@@ -166,8 +166,35 @@
     text-align:center; margin-top:10px; font-size:11.5px; color: var(--muted-2);
   }
   .credit b{ color:var(--muted); }
+  .mapwrap .note{
+    margin-top:6px; padding-top:14px; border-top:1px solid var(--line-soft);
+    text-align:center; max-width:640px; margin-left:auto; margin-right:auto;
+  }
 
   /* ---------- COMPARE MODE TOGGLE ---------- */
+  .compare-cta{
+    display:flex; align-items:center; gap:13px; text-align:left;
+    width:100%; padding:14px 16px; margin-bottom:22px;
+    border-radius:12px; border:1px solid var(--line);
+    background: #0d0d0d;
+    color: var(--text); cursor:pointer;
+    transition: transform .15s ease, border-color .15s ease, background .15s ease;
+  }
+  .compare-cta:hover{
+    transform: translateY(-1px); border-color: var(--muted-2); background:#141414;
+  }
+  .compare-cta-icon{
+    flex:none; width:38px; height:38px; border-radius:10px;
+    background: #1a1a1a; border:1px solid var(--line); color:var(--text);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .compare-cta-text{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .compare-cta-title{
+    display:flex; align-items:center; gap:7px;
+    font-family:'Rubik', sans-serif; font-weight:700; font-size:14px; color:var(--text);
+  }
+  .compare-cta-sub{ font-size:11.5px; color: var(--muted); line-height:1.4; font-weight:400; }
+
   .compare-btn{
     display:flex; align-items:center; justify-content:center; gap:9px;
     width:100%; padding:13px 14px; margin-bottom:22px;
@@ -388,14 +415,16 @@
       Tocá una franja de color para filtrar el mapa, o una provincia para ver su ficha completa.
     </p>
 
-    <button class="compare-btn" id="compareToggle" type="button">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3L4 7l4 4"/><path d="M4 7h16"/><path d="M16 21l4-4-4-4"/><path d="M20 17H4"/></svg>
-      Modo de comparación
+    <button class="compare-cta" id="compareToggle" type="button">
+      <span class="compare-cta-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3L4 7l4 4"/><path d="M4 7h16"/><path d="M16 21l4-4-4-4"/><path d="M20 17H4"/></svg>
+      </span>
+      <span class="compare-cta-text">
+        <span class="compare-cta-title">Modo de comparación</span>
+        <span class="compare-cta-sub">Visualizá dos mapas lado a lado: tipo de boleta, legislatura, primarias, partido gobernante o alianza presidencial ganadora.</span>
+      </span>
     </button>
 
-    <div class="note">
-      <b style="color:var(--muted)">Fuente:</b> elaboración propia según la legislación electoral de cada provincia al 20 de agosto de 2026. Autor: Gonzalo Sagarraga.
-    </div>
   </aside>
 
   <!-- ============ MAP ============ -->
@@ -408,6 +437,9 @@
       <svg id="mapsvg" viewBox="-10 -644 816 1885" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
     <p class="credit">Mapa geográfico real — tocá o pasá el mouse sobre cada provincia.</p>
+    <div class="note">
+      <b style="color:var(--muted)">Fuente:</b> elaboración propia según la legislación electoral de cada provincia al 20 de agosto de 2026. Autor: Gonzalo Sagarraga.
+    </div>
   </main>
 
 </div>
@@ -841,11 +873,12 @@ const ALIANZA_PROVINCIAL = {
   tierradelfuego: { "2015_1":"fpv", "2015_2":"fpv", "2019":"fpv", "2023_1":"fpv", "2023_2":"lla" },
   tucuman: { "2015_1":"fpv", "2015_2":"fpv", "2019":"fpv", "2023_1":"fpv", "2023_2":"lla" }
 };
-const ALIANZA_CATEGORIES = {
-  fpv: "Frente para la Victoria / Frente de Todos / Unión por la Patria",
-  cambiemos: "Cambiemos / Juntos por el Cambio",
-  otro: "Otro",
-  lla: "La Libertad Avanza"
+const ALIANZA_CATEGORIES_BY_YEAR = {
+  "2015_1": { fpv: "Frente para la Victoria", cambiemos: "Cambiemos", otro: "Otro" },
+  "2015_2": { fpv: "Frente para la Victoria", cambiemos: "Cambiemos" },
+  "2019": { fpv: "Frente de Todos", cambiemos: "Juntos por el Cambio" },
+  "2023_1": { fpv: "Unión por la Patria", cambiemos: "Juntos por el Cambio", lla: "La Libertad Avanza" },
+  "2023_2": { fpv: "Unión por la Patria", lla: "La Libertad Avanza" }
 };
 
 // Variables disponibles para mapear. Cada una define cómo obtener su valor
@@ -875,31 +908,31 @@ const VARIABLES = [
     id: "alianza_2015_1",
     label: "Alianza ganadora (presidencial) — 1ra vuelta 2015",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2015_1"],
-    categories: ALIANZA_CATEGORIES
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2015_1"]
   },
   {
     id: "alianza_2015_2",
     label: "Alianza ganadora (presidencial) — 2da vuelta 2015",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2015_2"],
-    categories: ALIANZA_CATEGORIES
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2015_2"]
   },
   {
     id: "alianza_2019",
     label: "Alianza ganadora (presidencial) — Elecciones generales 2019",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2019"],
-    categories: ALIANZA_CATEGORIES
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2019"]
   },
   {
     id: "alianza_2023_1",
     label: "Alianza ganadora (presidencial) — 1ra vuelta 2023",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2023_1"],
-    categories: ALIANZA_CATEGORIES
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2023_1"]
   },
   {
     id: "alianza_2023_2",
     label: "Alianza ganadora (presidencial) — 2da vuelta 2023",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2023_2"],
-    categories: ALIANZA_CATEGORIES
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2023_2"]
   }
 ];
 
@@ -953,7 +986,7 @@ PROVINCES.filter(p => p.id !== 'caba').forEach(p => {
   g.dataset.cat = 'electronica';
 
   const dot = document.createElementNS(SVG_NS,'circle');
-  dot.setAttribute('cx', 585.1); dot.setAttribute('cy', 101.8); dot.setAttribute('r', 4.5);
+  dot.setAttribute('cx', 552.8); dot.setAttribute('cy', 79.3); dot.setAttribute('r', 18);
   dot.setAttribute('class','caba-dot');
   g.appendChild(dot);
 
@@ -1114,7 +1147,7 @@ function buildCompareMap(svgId, legendId, selectId, updatedId){
     g.dataset.id = 'caba';
     g.dataset.cat = catValCaba;
     const dot = document.createElementNS(SVG_NS,'circle');
-    dot.setAttribute('cx', 585.1); dot.setAttribute('cy', 101.8); dot.setAttribute('r', 4.5);
+    dot.setAttribute('cx', 552.8); dot.setAttribute('cy', 79.3); dot.setAttribute('r', 18);
     dot.setAttribute('class','caba-dot');
     dot.style.fill = 'var(--'+catValCaba+')';
     g.appendChild(dot);
