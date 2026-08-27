@@ -59,20 +59,25 @@
     background: var(--bg-soft);
     display:flex; flex-direction:column;
   }
+  .title-card{
+    padding: 16px 18px; margin-bottom:22px;
+    border-radius: 12px; border: 1px solid var(--line);
+    background: #0d0d0d;
+  }
   .eyebrow{
     font-size:11.5px; letter-spacing:.16em; text-transform:uppercase;
     color: var(--muted-2); font-weight:600; margin:0 0 10px;
   }
   h1{
-    font-size: 30px; line-height:1.08; font-weight:800; margin:0 0 6px;
+    font-size: 26px; line-height:1.08; font-weight:800; margin:0;
     letter-spacing:-0.01em;
   }
-  h1 span{ display:block; color: var(--muted); font-weight:600; font-size:16px; margin-top:10px; letter-spacing:0; }
+  h1 span{ display:block; color: var(--muted); font-weight:600; font-size:15px; margin-top:9px; letter-spacing:0; }
   .lede{
-    color: var(--muted); font-size:14px; line-height:1.55; margin: 16px 0 28px;
+    color: var(--muted); font-size:14px; line-height:1.55; margin: 16px 0 28px; padding: 0 18px;
   }
 
-  .legend{ display:flex; flex-direction:column; gap:8px; margin-bottom: 26px; }
+  .legend{ display:flex; flex-direction:column; gap:8px; margin-bottom: 10px; }
   .legend-item{
     display:flex; align-items:center; gap:12px;
     padding: 9px 13px; border-radius: 10px;
@@ -97,7 +102,8 @@
   }
 
   .hint{
-    font-size:12px; color:var(--muted-2); display:flex; align-items:center; gap:8px; margin-top:4px;
+    font-size:12px; color:var(--muted-2); display:flex; align-items:center; gap:8px;
+    margin:6px 0 26px; padding: 0 18px;
   }
   .hint svg{ flex:none; }
 
@@ -144,11 +150,13 @@
   .province:hover{ filter: brightness(1.16); stroke:#fff; stroke-width:2.2; }
   .province.faded{ opacity:.2; }
   .province.active{ stroke:#fff; stroke-width:2.6; filter: brightness(1.12); }
+  .province.cross-hover{ filter: brightness(1.16); stroke:#fff; stroke-width:2.2; }
 
   .caba-pin{ cursor:pointer; }
   .caba-dot{ fill: var(--electronica); stroke:#0a0a0a; stroke-width:1.4; transition: filter .15s ease, opacity .18s ease, r .15s ease; }
   .caba-pin:hover .caba-dot{ filter: brightness(1.25); }
   .caba-pin.faded{ opacity:.2; }
+  .caba-pin.cross-hover .caba-dot{ filter: brightness(1.25); }
 
   .tooltip{
     position:fixed; pointer-events:none;
@@ -170,6 +178,8 @@
     margin-top:6px; padding-top:14px; border-top:1px solid var(--line-soft);
     text-align:center; max-width:640px; margin-left:auto; margin-right:auto;
   }
+  .contact-link{ color: var(--muted); text-decoration:none; border-bottom:1px solid transparent; }
+  .contact-link:hover{ color: var(--text); border-bottom-color: var(--muted-2); }
 
   /* ---------- COMPARE MODE TOGGLE ---------- */
   .compare-cta{
@@ -222,6 +232,7 @@
   }
   .compare-topbar h2{ font-size:22px; font-weight:800; margin:6px 0 0; letter-spacing:-.01em; }
   .compare-topbar .eyebrow{ margin:0; }
+  .compare-topbar-actions{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
 
   .compare-grid{
     flex:1; display:grid; grid-template-columns: 1fr auto 1fr;
@@ -268,6 +279,18 @@
   .compare-chip.dim{ opacity:.4; }
   .chip-dot{ width:9px; height:9px; border-radius:3px; flex:none; }
   .chip-count{ color:var(--muted-2); font-family:'Rubik Mono One', monospace; font-size:10.5px; }
+
+  .compare-gradient-legend{
+    display:flex; align-items:center; gap:10px; width:100%;
+    font-family:'Rubik Mono One', monospace; font-size:11px; color:var(--muted-2);
+  }
+  .grad-bar{
+    flex:1; height:12px; border-radius:100px; border:1px solid var(--line-soft);
+  }
+  .value-label{
+    font-family:'Rubik', sans-serif; font-weight:700; font-size:22px;
+    text-anchor:middle; dominant-baseline:central;
+  }
 
   .compare-mapcanvas{
     flex:1; min-height:0; position:relative;
@@ -391,8 +414,10 @@
   <!-- ============ SIDEBAR ============ -->
   <aside class="sidebar">
     <div>
-      <p class="eyebrow">Legislación electoral · Argentina</p>
-      <h1>Tipo de boleta electoral<span>según legislación provincial vigente</span></h1>
+      <div class="title-card">
+        <p class="eyebrow">Legislación electoral · Argentina</p>
+        <h1>Tipo de boleta electoral<span>según legislación provincial vigente</span></h1>
+      </div>
       <p class="lede">Cada una de las 24 jurisdicciones argentinas define su propio instrumento de votación. Tocá una provincia en el mapa para ver su boleta, la legislación que la regula, cómo se organiza su Poder Legislativo y cómo se eligen sus cargos.</p>
     </div>
 
@@ -416,7 +441,7 @@
 
     <p class="hint">
       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
-      Tocá una franja de color para filtrar el mapa, o una provincia para ver su ficha completa.
+      Seleccioná el tipo de boleta para filtrar el mapa, o una provincia para ver su ficha completa.
     </p>
 
     <button class="compare-cta" id="compareToggle" type="button">
@@ -443,6 +468,10 @@
     <p class="credit">Mapa geográfico real — tocá o pasá el mouse sobre cada provincia.</p>
     <div class="note">
       <b style="color:var(--muted)">Fuente:</b> elaboración propia según la legislación electoral de cada provincia al 20 de agosto de 2026. Autor: Gonzalo Sagarraga.
+      <br>
+      <a href="https://instagram.com/gsagarraga" target="_blank" rel="noopener" class="contact-link">Instagram: @gsagarraga</a>
+      · <a href="https://linkedin.com/in/gsagarraga" target="_blank" rel="noopener" class="contact-link">LinkedIn: gsagarraga</a>
+      · <a href="mailto:gsagarraga@gmail.com" class="contact-link">gsagarraga@gmail.com</a>
     </div>
   </main>
 
@@ -455,10 +484,16 @@
       <p class="eyebrow">Modo de comparación</p>
       <h2>Comparar dos variables lado a lado</h2>
     </div>
-    <button class="compare-btn compare-btn-ghost" id="compareExit" type="button">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
-      Volver a vista simple
-    </button>
+    <div class="compare-topbar-actions">
+      <button class="compare-btn compare-btn-ghost" id="compareShare" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-3.9M8.6 13.5l6.8 3.9"/></svg>
+        <span id="compareShareLabel">Compartir esta comparación</span>
+      </button>
+      <button class="compare-btn compare-btn-ghost" id="compareExit" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        Volver a vista simple
+      </button>
+    </div>
   </div>
 
   <div class="compare-grid">
@@ -885,9 +920,18 @@ const ALIANZA_CATEGORIES_BY_YEAR = {
   "2023_2": { fpv: "Unión por la Patria", lla: "La Libertad Avanza" }
 };
 
+// Cantidad de diputados nacionales por distrito.
+const DIPUTADOS_PROVINCIAL = {
+  buenosaires: 70, caba: 25, catamarca: 5, chaco: 7, chubut: 5, cordoba: 18,
+  corrientes: 7, entrerios: 9, formosa: 5, jujuy: 6, lapampa: 5, larioja: 5,
+  mendoza: 10, misiones: 7, neuquen: 5, rionegro: 5, salta: 7, sanjuan: 6,
+  sanluis: 5, santacruz: 5, santafe: 19, santiago: 7, tierradelfuego: 5, tucuman: 9
+};
+
 // Variables disponibles para mapear. Cada una define cómo obtener su valor
 // categórico por provincia (field directo, o getValue cuando hay que derivarlo)
-// y las categorías/colores con los que se pinta el mapa.
+// y las categorías/colores con los que se pinta el mapa. Las de type:"quantitative"
+// usan una escala de color continua (gradiente) en vez de categorías fijas.
 const VARIABLES = [
   { id: "boleta", label: "Tipo de boleta electoral", field: "cat", categories: CAT_LABEL },
   {
@@ -937,6 +981,12 @@ const VARIABLES = [
     label: "Alianza ganadora (presidencial) — 2da vuelta 2023",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2023_2"],
     categories: ALIANZA_CATEGORIES_BY_YEAR["2023_2"]
+  },
+  {
+    id: "diputados",
+    label: "Cantidad de diputados por distrito",
+    type: "quantitative",
+    getValue: p => DIPUTADOS_PROVINCIAL[p.id]
   }
 ];
 
@@ -944,6 +994,24 @@ const VARIABLES = [
 // usando getValue si la variable lo define, o el campo directo en caso contrario.
 function valueOf(varDef, p){
   return varDef.getValue ? varDef.getValue(p) : p[varDef.field];
+}
+
+// Escala de verdes para variables cuantitativas: más intensidad (más oscuro y saturado)
+// a mayor valor. Devuelve un color hsl() interpolado entre el mínimo y el máximo del set.
+// Uso una escala logarítmica en vez de lineal: cuando la mayoría de los valores está
+// agrupada cerca del mínimo y unos pocos casos extremos (p. ej. Buenos Aires) se disparan
+// mucho más arriba, una escala lineal aplasta casi todos los colores contra el extremo
+// claro. El logaritmo separa mejor los matices entre los valores bajos e intermedios.
+function greenScale(value, min, max){
+  const safeMin = Math.max(min, 1);
+  const safeMax = Math.max(max, safeMin + 1);
+  const logMin = Math.log(safeMin);
+  const logMax = Math.log(safeMax);
+  const logV = Math.log(Math.max(value, safeMin));
+  const t = logMax > logMin ? (logV - logMin) / (logMax - logMin) : 0.5;
+  const l = 90 - t * 68;   // luminosidad: 90% (claro) -> 22% (oscuro)
+  const s = 32 + t * 46;   // saturación: 32% -> 78%
+  return { color: `hsl(152, ${s}%, ${l}%)`, t };
 }
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -1070,12 +1138,20 @@ document.addEventListener('keydown', e=>{ if(e.key==='Escape') closePanel(); });
 // ============ MODO DE COMPARACIÓN ============
 // Instancia genérica de mapa: recibe los ids de su SVG, su leyenda y su selector
 // de variable, y sabe redibujarse cada vez que cambia la variable elegida.
-function buildCompareMap(svgId, legendId, selectId, updatedId){
+function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
   const svgEl = document.getElementById(svgId);
   const legendEl = document.getElementById(legendId);
   const selectEl = document.getElementById(selectId);
   const updatedEl = document.getElementById(updatedId);
   let activeFilter = null;
+  const otherSvgId = svgId === 'mapsvgA' ? 'mapsvgB' : 'mapsvgA';
+
+  function crossHighlight(pid, on){
+    const otherSvg = document.getElementById(otherSvgId);
+    if(!otherSvg) return;
+    const el = otherSvg.querySelector('[data-id="'+pid+'"]');
+    if(el) el.classList.toggle('cross-hover', on);
+  }
 
   VARIABLES.forEach(v=>{
     const opt = document.createElement('option');
@@ -1086,6 +1162,18 @@ function buildCompareMap(svgId, legendId, selectId, updatedId){
 
   function renderLegend(varDef){
     legendEl.innerHTML = '';
+    if(varDef.type === 'quantitative'){
+      const vals = PROVINCES.map(p=>valueOf(varDef,p));
+      const min = Math.min(...vals), max = Math.max(...vals);
+      const bar = document.createElement('div');
+      bar.className = 'compare-gradient-legend';
+      bar.innerHTML = '<span class="grad-min">'+min+'</span>'
+        + '<span class="grad-bar" style="background:linear-gradient(90deg, '
+          + greenScale(min,min,max).color + ', ' + greenScale(max,min,max).color + ')"></span>'
+        + '<span class="grad-max">'+max+'</span>';
+      legendEl.appendChild(bar);
+      return;
+    }
     Object.keys(varDef.categories).forEach(catKey=>{
       const n = PROVINCES.filter(p=>valueOf(varDef,p)===catKey).length;
       const chip = document.createElement('div');
@@ -1111,6 +1199,12 @@ function buildCompareMap(svgId, legendId, selectId, updatedId){
 
   function renderProvinces(varDef){
     svgEl.innerHTML = '';
+    const isQuant = varDef.type === 'quantitative';
+    let min = 0, max = 0;
+    if(isQuant){
+      const vals = PROVINCES.map(p=>valueOf(varDef,p));
+      min = Math.min(...vals); max = Math.max(...vals);
+    }
 
     PROVINCES.filter(p=>p.id!=='caba').forEach(p=>{
       const d = PROVINCE_D[p.id];
@@ -1118,12 +1212,20 @@ function buildCompareMap(svgId, legendId, selectId, updatedId){
       const catVal = valueOf(varDef,p);
       const el = document.createElementNS(SVG_NS,'path');
       el.setAttribute('d', d);
-      el.setAttribute('class','province ' + catVal);
       el.dataset.id = p.id;
       el.dataset.cat = catVal;
+      if(isQuant){
+        const sc = greenScale(catVal, min, max);
+        el.setAttribute('class','province');
+        el.style.fill = sc.color;
+      } else {
+        el.setAttribute('class','province ' + catVal);
+      }
       el.addEventListener('click', ()=>openPanel(p));
-      el.addEventListener('mousemove', e=>showTooltip(e,p.name));
+      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? p.name+' — '+catVal+' diputados' : p.name));
       el.addEventListener('mouseleave', hideTooltip);
+      el.addEventListener('mouseenter', ()=>crossHighlight(p.id, true));
+      el.addEventListener('mouseleave', ()=>crossHighlight(p.id, false));
       svgEl.appendChild(el);
     });
 
@@ -1134,12 +1236,19 @@ function buildCompareMap(svgId, legendId, selectId, updatedId){
       const catVal = valueOf(varDef,tdf);
       const el = document.createElementNS(SVG_NS,'path');
       el.setAttribute('d', dMalvinas);
-      el.setAttribute('class','province ' + catVal);
       el.dataset.id = 'malvinas';
       el.dataset.cat = catVal;
+      if(isQuant){
+        el.setAttribute('class','province');
+        el.style.fill = greenScale(catVal, min, max).color;
+      } else {
+        el.setAttribute('class','province ' + catVal);
+      }
       el.addEventListener('click', ()=>openPanel(tdf));
-      el.addEventListener('mousemove', e=>showTooltip(e,'Islas Malvinas (Tierra del Fuego)'));
+      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'Islas Malvinas (Tierra del Fuego) — '+catVal+' diputados' : 'Islas Malvinas (Tierra del Fuego)'));
       el.addEventListener('mouseleave', hideTooltip);
+      el.addEventListener('mouseenter', ()=>crossHighlight('malvinas', true));
+      el.addEventListener('mouseleave', ()=>crossHighlight('malvinas', false));
       svgEl.appendChild(el);
     }
 
@@ -1153,11 +1262,19 @@ function buildCompareMap(svgId, legendId, selectId, updatedId){
     const dot = document.createElementNS(SVG_NS,'circle');
     dot.setAttribute('cx', 552.8); dot.setAttribute('cy', 79.3); dot.setAttribute('r', 18);
     dot.setAttribute('class','caba-dot');
-    dot.style.fill = 'var(--'+catValCaba+')';
+    let cabaScale = null;
+    if(isQuant){
+      cabaScale = greenScale(catValCaba, min, max);
+      dot.style.fill = cabaScale.color;
+    } else {
+      dot.style.fill = 'var(--'+catValCaba+')';
+    }
     g.appendChild(dot);
     g.addEventListener('click', ()=>openPanel(caba));
-    g.addEventListener('mousemove', e=>showTooltip(e,'CABA'));
+    g.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'CABA — '+catValCaba+' diputados' : 'CABA'));
     g.addEventListener('mouseleave', hideTooltip);
+    g.addEventListener('mouseenter', ()=>crossHighlight('caba', true));
+    g.addEventListener('mouseleave', ()=>crossHighlight('caba', false));
     svgEl.appendChild(g);
 
     applyFilter();
@@ -1172,24 +1289,58 @@ function buildCompareMap(svgId, legendId, selectId, updatedId){
 
   selectEl.addEventListener('change', ()=> setVariable(selectEl.value));
   if(updatedEl) updatedEl.textContent = 'ACT. 20·08·2026';
-  setVariable(VARIABLES[0].id);
+  const startId = (initialVarId && VARIABLES.some(v=>v.id===initialVarId)) ? initialVarId : VARIABLES[0].id;
+  selectEl.value = startId;
+  setVariable(startId);
+}
+
+function getShareURL(){
+  const valA = document.getElementById('varSelectA').value;
+  const valB = document.getElementById('varSelectB').value;
+  const url = new URL(window.location.href);
+  url.search = '';
+  url.searchParams.set('compare', '1');
+  url.searchParams.set('a', valA);
+  url.searchParams.set('b', valB);
+  return url.toString();
 }
 
 let compareBuilt = false;
-function enterCompareMode(){
-  if(!compareBuilt){
-    buildCompareMap('mapsvgA','legendA','varSelectA','updatedA');
-    buildCompareMap('mapsvgB','legendB','varSelectB','updatedB');
-    compareBuilt = true;
-  }
+function enterCompareMode(varA, varB){
   hideTooltip();
   document.body.classList.add('mode-compare');
+  if(!compareBuilt){
+    buildCompareMap('mapsvgA','legendA','varSelectA','updatedA', varA);
+    buildCompareMap('mapsvgB','legendB','varSelectB','updatedB', varB);
+    compareBuilt = true;
+  }
 }
 function exitCompareMode(){
   document.body.classList.remove('mode-compare');
 }
-document.getElementById('compareToggle').addEventListener('click', enterCompareMode);
+document.getElementById('compareToggle').addEventListener('click', ()=>enterCompareMode());
 document.getElementById('compareExit').addEventListener('click', exitCompareMode);
+
+document.getElementById('compareShare').addEventListener('click', ()=>{
+  const url = getShareURL();
+  const label = document.getElementById('compareShareLabel');
+  const restore = label.textContent;
+  const done = ()=>{ label.textContent = '¡Enlace copiado!'; setTimeout(()=>{ label.textContent = restore; }, 2200); };
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(url).then(done).catch(()=>{ window.prompt('Copiá el enlace:', url); });
+  } else {
+    window.prompt('Copiá el enlace:', url);
+  }
+});
+
+// Si la URL trae parámetros de comparación (?compare=1&a=...&b=...), abrir el modo
+// de comparación directamente con esas variables ya seleccionadas.
+(function initFromURL(){
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('compare') === '1'){
+    enterCompareMode(params.get('a'), params.get('b'));
+  }
+})();
 </script>
 </body>
 </html>
