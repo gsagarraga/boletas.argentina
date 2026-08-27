@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistemas electorales provinciales — Argentina</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Cpath d='M20 30 L44 30 L41 54 Q41 56 39 56 L25 56 Q23 56 23 54 Z' fill='%235b8ff2'/%3E%3Crect x='16' y='22' width='32' height='9' rx='3' fill='%235b8ff2'/%3E%3Crect x='28' y='19' width='8' height='5' rx='1' fill='%230a0a0a'/%3E%3Cg transform='rotate(-18 34 14)'%3E%3Crect x='27' y='6' width='14' height='18' rx='1.5' fill='%2334c98f' stroke='%230a0a0a' stroke-width='1.4'/%3E%3Cline x1='30' y1='11' x2='38' y2='11' stroke='%230a0a0a' stroke-width='1.2'/%3E%3Cline x1='30' y1='15' x2='38' y2='15' stroke='%230a0a0a' stroke-width='1.2'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Rubik+Mono+One&display=swap" rel="stylesheet">
 <style>
@@ -35,6 +36,7 @@
     --otro: #949494;
     --lla: #9775d1;
     --shadow: 0 20px 60px rgba(0,0,0,0.6);
+    --blue-gradient: linear-gradient(135deg, #8fb2f7, #3f6fd6);
   }
   *{ box-sizing: border-box; }
   html,body{
@@ -49,38 +51,46 @@
   .app{
     display:grid;
     grid-template-columns: 380px 1fr;
-    min-height:100vh;
+    height:100vh;
   }
 
   /* ---------- SIDEBAR ---------- */
   .sidebar{
-    padding: 42px 34px 28px;
+    padding: 26px 30px 18px;
     border-right: 1px solid var(--line);
     background: var(--bg-soft);
     display:flex; flex-direction:column;
+    height:100vh; overflow-y:auto;
   }
   .title-card{
-    padding: 16px 18px; margin-bottom:22px;
+    display:flex; align-items:flex-start; gap:12px;
+    padding: 12px 16px; margin-bottom:14px;
     border-radius: 12px; border: 1px solid var(--line);
     background: #0d0d0d;
   }
+  .title-card-icon{
+    flex:none; width:34px; height:34px; border-radius:9px; margin-top:2px;
+    background: var(--blue-gradient); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .title-card-text{ min-width:0; }
   .eyebrow{
-    font-size:11.5px; letter-spacing:.16em; text-transform:uppercase;
-    color: var(--muted-2); font-weight:600; margin:0 0 10px;
+    font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color: var(--muted-2); font-weight:600; margin:0 0 7px;
   }
   h1{
-    font-size: 26px; line-height:1.08; font-weight:800; margin:0;
+    font-size: 22px; line-height:1.08; font-weight:800; margin:0;
     letter-spacing:-0.01em;
   }
-  h1 span{ display:block; color: var(--muted); font-weight:600; font-size:15px; margin-top:9px; letter-spacing:0; }
+  h1 span{ display:block; color: var(--muted); font-weight:600; font-size:13.5px; margin-top:6px; letter-spacing:0; }
   .lede{
-    color: var(--muted); font-size:14px; line-height:1.55; margin: 16px 0 28px; padding: 0 18px;
+    color: var(--muted); font-size:13px; line-height:1.45; margin: 10px 0 14px; padding: 0 18px;
   }
 
-  .legend{ display:flex; flex-direction:column; gap:8px; margin-bottom: 10px; }
+  .legend{ display:flex; flex-direction:column; gap:6px; margin-bottom: 8px; }
   .legend-item{
     display:flex; align-items:center; gap:12px;
-    padding: 9px 13px; border-radius: 10px;
+    padding: 7px 12px; border-radius: 10px;
     border: 1px solid var(--line-soft);
     background: #0d0d0d;
     cursor:pointer;
@@ -89,7 +99,7 @@
   .legend-item:hover{ border-color: var(--muted-2); transform: translateX(2px); }
   .legend-item.dim{ opacity:.4; }
   .swatch{ width:14px; height:14px; border-radius:4px; flex:none; }
-  .legend-text b{ display:block; font-size:13.5px; font-weight:600; }
+  .legend-text b{ display:block; font-size:13px; font-weight:600; }
   .legend-text small{ display:block; color:var(--muted); font-size:12px; margin-top:2px; line-height:1.4;}
   .legend-count{
     margin-left:auto; font-family:'Rubik Mono One', monospace; font-size:12px; color:var(--muted-2);
@@ -97,13 +107,13 @@
   }
 
   .note{
-    margin-top:auto; padding-top:20px; border-top:1px solid var(--line-soft);
-    font-size:11.5px; color: var(--muted-2); line-height:1.6;
+    margin-top:auto; padding-top:14px; border-top:1px solid var(--line-soft);
+    font-size:11px; color: var(--muted-2); line-height:1.5;
   }
 
   .hint{
-    font-size:12px; color:var(--muted-2); display:flex; align-items:center; gap:8px;
-    margin:6px 0 26px; padding: 0 18px;
+    font-size:11.5px; color:var(--muted-2); display:flex; align-items:center; gap:8px;
+    margin:2px 0 14px; padding: 0 18px;
   }
   .hint svg{ flex:none; }
 
@@ -112,7 +122,8 @@
     position:relative;
     padding: 40px 40px 20px;
     display:flex; flex-direction:column;
-    min-height:100vh;
+    height:100vh; min-height:0;
+    overflow-y:auto;
   }
   .maptop{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 10px; }
   .maptop h2{ font-size:14px; margin:0; color:var(--muted); font-weight:600; letter-spacing:.02em; }
@@ -175,6 +186,7 @@
   }
   .credit b{ color:var(--muted); }
   .mapwrap .note{
+    display:none;
     margin-top:6px; padding-top:14px; border-top:1px solid var(--line-soft);
     text-align:center; max-width:640px; margin-left:auto; margin-right:auto;
   }
@@ -183,8 +195,8 @@
 
   /* ---------- COMPARE MODE TOGGLE ---------- */
   .compare-cta{
-    display:flex; align-items:center; gap:13px; text-align:left;
-    width:100%; padding:14px 16px; margin-bottom:22px;
+    display:flex; align-items:center; gap:12px; text-align:left;
+    width:100%; padding:10px 14px; margin-bottom:14px;
     border-radius:12px; border:1px solid var(--line);
     background: #0d0d0d;
     color: var(--text); cursor:pointer;
@@ -194,16 +206,16 @@
     transform: translateY(-1px); border-color: var(--muted-2); background:#141414;
   }
   .compare-cta-icon{
-    flex:none; width:38px; height:38px; border-radius:10px;
-    background: #1a1a1a; border:1px solid var(--line); color:var(--text);
+    flex:none; width:32px; height:32px; border-radius:9px;
+    background: var(--blue-gradient); border:1px solid rgba(255,255,255,0.15); color:#fff;
     display:flex; align-items:center; justify-content:center;
   }
-  .compare-cta-text{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .compare-cta-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
   .compare-cta-title{
     display:flex; align-items:center; gap:7px;
-    font-family:'Rubik', sans-serif; font-weight:700; font-size:14px; color:var(--text);
+    font-family:'Rubik', sans-serif; font-weight:700; font-size:13.5px; color:var(--text);
   }
-  .compare-cta-sub{ font-size:11.5px; color: var(--muted); line-height:1.4; font-weight:400; }
+  .compare-cta-sub{ font-size:11px; color: var(--muted); line-height:1.35; font-weight:400; }
 
   .compare-btn{
     display:flex; align-items:center; justify-content:center; gap:9px;
@@ -228,7 +240,7 @@
   .compare-topbar{
     display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
     padding: 32px 40px 20px; border-bottom:1px solid var(--line);
-    background: var(--bg-soft);
+    background: linear-gradient(135deg, rgba(143,178,247,0.16), rgba(63,111,214,0.06)), var(--bg-soft);
   }
   .compare-topbar h2{ font-size:22px; font-weight:800; margin:6px 0 0; letter-spacing:-.01em; }
   .compare-topbar .eyebrow{ margin:0; }
@@ -268,7 +280,10 @@
   .var-select:hover{ border-color: var(--muted-2); }
   .updated{ font-size:11px; color:var(--muted-2); font-family:'Rubik Mono One', monospace; white-space:nowrap; }
 
-  .compare-legend{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px; }
+  .compare-legend{
+    display:flex; flex-wrap:wrap; align-content:flex-start; gap:8px;
+    margin-bottom:16px; min-height:76px;
+  }
   .compare-chip{
     display:flex; align-items:center; gap:7px;
     padding:7px 11px; border-radius:100px; border:1px solid var(--line-soft);
@@ -388,12 +403,26 @@
   .law-link:hover{ border-color: var(--text); }
   .law-link svg{ flex:none; }
 
+  .lede-more{ margin-top:-6px; }
+  .inline-link{
+    background: var(--blue-gradient);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(90,140,235,0.45);
+    font-weight:600; padding-bottom:1px;
+    transition: border-color .15s ease, filter .15s ease;
+  }
+  .inline-link:hover{ border-color: rgba(90,140,235,0.8); filter: brightness(1.2); }
+
   hr.sep{ border:none; border-top:1px solid var(--line-soft); margin: 30px 0; }
 
   @media (max-width: 920px){
-    .app{ grid-template-columns: 1fr; }
-    .sidebar{ border-right:none; border-bottom:1px solid var(--line); padding: 24px 20px; }
-    h1{ font-size:24px; }
+    .app{ grid-template-columns: 1fr; height:auto; }
+    .sidebar{ border-right:none; border-bottom:1px solid var(--line); padding: 24px 20px; height:auto; overflow-y:visible; }
+    .sidebar > .note{ display:none; }
+    .mapwrap .note{ display:block; }
+    .mapwrap{ height:auto; overflow-y:visible; }
+    h1{ font-size:20px; }
     .lede{ margin: 10px 0 18px; }
     .mapwrap{ padding: 18px 10px; }
     #mapsvg{ max-height:64vh; }
@@ -415,10 +444,20 @@
   <aside class="sidebar">
     <div>
       <div class="title-card">
-        <p class="eyebrow">Legislación electoral · Argentina</p>
-        <h1>Tipo de boleta electoral<span>según legislación provincial vigente</span></h1>
+        <div class="title-card-icon">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 10l1.2 9.5a1.5 1.5 0 0 0 1.5 1.3h8.6a1.5 1.5 0 0 0 1.5-1.3L19 10"/>
+            <rect x="3.5" y="7.5" width="17" height="3" rx="1"/>
+            <path d="M9 4.5l6 3.4"/>
+          </svg>
+        </div>
+        <div class="title-card-text">
+          <p class="eyebrow">Legislación electoral · Argentina</p>
+          <h1>Tipo de boleta electoral<span>según legislación provincial vigente</span></h1>
+        </div>
       </div>
       <p class="lede">Cada una de las 24 jurisdicciones argentinas define su propio instrumento de votación. Tocá una provincia en el mapa para ver su boleta, la legislación que la regula, cómo se organiza su Poder Legislativo y cómo se eligen sus cargos.</p>
+      <p class="lede lede-more">Si te interesa saber más sobre tipos de boletas y su relación con los resultados electorales, <a class="inline-link" href="https://gsagarraga.github.io/eltipodeboleta.importa/#estudio" target="_blank" rel="noopener">aquí podés encontrar más información</a>.</p>
     </div>
 
     <div class="legend" id="legend">
@@ -454,6 +493,15 @@
       </span>
     </button>
 
+    <div class="note">
+      <b style="color:var(--muted)">Fuente:</b> elaboración propia según la legislación electoral de cada provincia al 20 de agosto de 2026.
+      <br>
+      <b style="color:var(--muted)">Autor:</b> Gonzalo Sagarraga.
+      <br>
+      <a href="https://instagram.com/gsagarraga" target="_blank" rel="noopener" class="contact-link">Instagram: @gsagarraga</a>
+      · <a href="https://linkedin.com/in/gsagarraga" target="_blank" rel="noopener" class="contact-link">LinkedIn: gsagarraga</a>
+      · <a href="mailto:gsagarraga@gmail.com" class="contact-link">gsagarraga@gmail.com</a>
+    </div>
   </aside>
 
   <!-- ============ MAP ============ -->
@@ -467,7 +515,9 @@
     </div>
     <p class="credit">Mapa geográfico real — tocá o pasá el mouse sobre cada provincia.</p>
     <div class="note">
-      <b style="color:var(--muted)">Fuente:</b> elaboración propia según la legislación electoral de cada provincia al 20 de agosto de 2026. Autor: Gonzalo Sagarraga.
+      <b style="color:var(--muted)">Fuente:</b> elaboración propia según la legislación electoral de cada provincia al 20 de agosto de 2026.
+      <br>
+      <b style="color:var(--muted)">Autor:</b> Gonzalo Sagarraga.
       <br>
       <a href="https://instagram.com/gsagarraga" target="_blank" rel="noopener" class="contact-link">Instagram: @gsagarraga</a>
       · <a href="https://linkedin.com/in/gsagarraga" target="_blank" rel="noopener" class="contact-link">LinkedIn: gsagarraga</a>
@@ -928,6 +978,28 @@ const DIPUTADOS_PROVINCIAL = {
   sanluis: 5, santacruz: 5, santafe: 19, santiago: 7, tierradelfuego: 5, tucuman: 9
 };
 
+// Electores habilitados por distrito. Fuente: Cámara Nacional Electoral (CNE),
+// padrón definitivo para las elecciones legislativas nacionales del 26/10/2025.
+const PADRON_2025 = {
+  buenosaires: 13353974, caba: 2520249, catamarca: 347282, chaco: 1013621,
+  chubut: 485052, cordoba: 3120707, corrientes: 951732, entrerios: 1155693,
+  formosa: 491558, jujuy: 602380, lapampa: 304693, larioja: 310155,
+  mendoza: 1523848, misiones: 1006564, neuquen: 581437, rionegro: 611533,
+  salta: 1117076, sanjuan: 620823, sanluis: 429732, santacruz: 272027,
+  santafe: 2846454, santiago: 826361, tierradelfuego: 153120, tucuman: 1341563
+};
+
+// Población total por distrito. Fuente: INDEC, Censo Nacional de Población,
+// Hogares y Viviendas 2022 (resultados definitivos).
+const POBLACION_2022 = {
+  buenosaires: 17523996, caba: 3121707, catamarca: 429562, chaco: 1129606,
+  chubut: 592621, cordoba: 3840905, corrientes: 1212696, entrerios: 1425578,
+  formosa: 607419, jujuy: 811611, lapampa: 361859, larioja: 383865,
+  mendoza: 2043540, misiones: 1278873, neuquen: 710814, rionegro: 750768,
+  salta: 1441351, sanjuan: 822853, sanluis: 542069, santacruz: 337226,
+  santafe: 3544908, santiago: 1060906, tierradelfuego: 185732, tucuman: 1731820
+};
+
 // Variables disponibles para mapear. Cada una define cómo obtener su valor
 // categórico por provincia (field directo, o getValue cuando hay que derivarlo)
 // y las categorías/colores con los que se pinta el mapa. Las de type:"quantitative"
@@ -984,9 +1056,24 @@ const VARIABLES = [
   },
   {
     id: "diputados",
-    label: "Cantidad de diputados por distrito",
+    label: "Cantidad de diputados/as nacionales por distrito",
     type: "quantitative",
+    unit: "diputados/as",
     getValue: p => DIPUTADOS_PROVINCIAL[p.id]
+  },
+  {
+    id: "padron",
+    label: "Electores habilitados (padrón 2025)",
+    type: "quantitative",
+    unit: "electores",
+    getValue: p => PADRON_2025[p.id]
+  },
+  {
+    id: "poblacion",
+    label: "Población total (Censo 2022)",
+    type: "quantitative",
+    unit: "habitantes",
+    getValue: p => POBLACION_2022[p.id]
   }
 ];
 
@@ -1167,10 +1254,10 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
       const min = Math.min(...vals), max = Math.max(...vals);
       const bar = document.createElement('div');
       bar.className = 'compare-gradient-legend';
-      bar.innerHTML = '<span class="grad-min">'+min+'</span>'
+      bar.innerHTML = '<span class="grad-min">'+min.toLocaleString('es-AR')+'</span>'
         + '<span class="grad-bar" style="background:linear-gradient(90deg, '
           + greenScale(min,min,max).color + ', ' + greenScale(max,min,max).color + ')"></span>'
-        + '<span class="grad-max">'+max+'</span>';
+        + '<span class="grad-max">'+max.toLocaleString('es-AR')+'</span>';
       legendEl.appendChild(bar);
       return;
     }
@@ -1222,7 +1309,7 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
         el.setAttribute('class','province ' + catVal);
       }
       el.addEventListener('click', ()=>openPanel(p));
-      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? p.name+' — '+catVal+' diputados' : p.name));
+      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? p.name+' — '+catVal.toLocaleString('es-AR')+' '+varDef.unit : p.name));
       el.addEventListener('mouseleave', hideTooltip);
       el.addEventListener('mouseenter', ()=>crossHighlight(p.id, true));
       el.addEventListener('mouseleave', ()=>crossHighlight(p.id, false));
@@ -1245,7 +1332,7 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
         el.setAttribute('class','province ' + catVal);
       }
       el.addEventListener('click', ()=>openPanel(tdf));
-      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'Islas Malvinas (Tierra del Fuego) — '+catVal+' diputados' : 'Islas Malvinas (Tierra del Fuego)'));
+      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'Islas Malvinas (Tierra del Fuego) — '+catVal.toLocaleString('es-AR')+' '+varDef.unit : 'Islas Malvinas (Tierra del Fuego)'));
       el.addEventListener('mouseleave', hideTooltip);
       el.addEventListener('mouseenter', ()=>crossHighlight('malvinas', true));
       el.addEventListener('mouseleave', ()=>crossHighlight('malvinas', false));
@@ -1271,7 +1358,7 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
     }
     g.appendChild(dot);
     g.addEventListener('click', ()=>openPanel(caba));
-    g.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'CABA — '+catValCaba+' diputados' : 'CABA'));
+    g.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'CABA — '+catValCaba.toLocaleString('es-AR')+' '+varDef.unit : 'CABA'));
     g.addEventListener('mouseleave', hideTooltip);
     g.addEventListener('mouseenter', ()=>crossHighlight('caba', true));
     g.addEventListener('mouseleave', ()=>crossHighlight('caba', false));
