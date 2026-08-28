@@ -35,6 +35,17 @@
     --cambiemos: #e1b347;
     --otro: #949494;
     --lla: #9775d1;
+    --noa: #dd6d4b;
+    --nea: #47c27a;
+    --cuyo: #9775d1;
+    --centro: #e1b347;
+    --patagonia: #5fb3dd;
+    --agro: #47c27a;
+    --industria: #dd6d4b;
+    --mineria: #b66c2b;
+    --hidrocarburos: #356182;
+    --servicios: #9775d1;
+    --turismo: #e1b347;
     --shadow: 0 20px 60px rgba(0,0,0,0.6);
     --blue-gradient: linear-gradient(135deg, #8fb2f7, #3f6fd6);
   }
@@ -158,6 +169,17 @@
   .province.cambiemos{ fill: var(--cambiemos); }
   .province.otro{ fill: var(--otro); }
   .province.lla{ fill: var(--lla); }
+  .province.noa{ fill: var(--noa); }
+  .province.nea{ fill: var(--nea); }
+  .province.cuyo{ fill: var(--cuyo); }
+  .province.centro{ fill: var(--centro); }
+  .province.patagonia{ fill: var(--patagonia); }
+  .province.agro{ fill: var(--agro); }
+  .province.industria{ fill: var(--industria); }
+  .province.mineria{ fill: var(--mineria); }
+  .province.hidrocarburos{ fill: var(--hidrocarburos); }
+  .province.servicios{ fill: var(--servicios); }
+  .province.turismo{ fill: var(--turismo); }
   .province:hover{ filter: brightness(1.16); stroke:#fff; stroke-width:2.2; }
   .province.faded{ opacity:.2; }
   .province.active{ stroke:#fff; stroke-width:2.6; filter: brightness(1.12); }
@@ -237,6 +259,60 @@
   body.mode-compare .app{ display:none; }
   body.mode-compare .compare-app{ display:flex; }
 
+  /* ---------- TIMELINE MODE APP ---------- */
+  .timeline-app{ display:none; min-height:100vh; flex-direction:column; }
+  body.mode-timeline .app{ display:none; }
+  body.mode-timeline .timeline-app{ display:flex; }
+
+  .timeline-body{
+    flex:1; display:flex; flex-direction:column; min-height:0;
+    padding: 28px 40px 24px;
+  }
+  .timeline-legend{
+    display:flex; flex-wrap:wrap; gap:8px; margin-bottom:14px; min-height:40px;
+  }
+  .timeline-mapcanvas{
+    flex:1; min-height:0; position:relative;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .timeline-mapcanvas svg{ width:100%; height:100%; max-height:58vh; }
+
+  .timeline-controls{ display:flex; align-items:center; gap:22px; margin-top:16px; }
+  .timeline-play{
+    flex:none; width:50px; height:50px; border-radius:50%; border:none; cursor:pointer;
+    background: var(--blue-gradient); color:#fff;
+    display:flex; align-items:center; justify-content:center;
+    transition: transform .15s ease;
+  }
+  .timeline-play:hover{ transform: scale(1.06); }
+  .timeline-play svg{ margin-left:2px; }
+  .timeline-steps{ flex:1; display:flex; justify-content:space-between; position:relative; }
+  .timeline-steps::before{
+    content:''; position:absolute; left:12px; right:12px; top:9px; height:2px; background: var(--line); z-index:0;
+  }
+  .timeline-step{
+    position:relative; z-index:1; flex:1;
+    display:flex; flex-direction:column; align-items:center; gap:9px;
+    background:transparent; border:none; cursor:pointer; padding:0;
+  }
+  .timeline-step .dot{
+    width:18px; height:18px; border-radius:50%; background:#0d0d0d;
+    border:2px solid var(--line); transition: all .2s ease;
+  }
+  .timeline-step .label{
+    font-size:11px; font-family:'Rubik Mono One', monospace; color: var(--muted-2);
+    transition: color .2s ease;
+  }
+  .timeline-step.active .dot{ background: var(--partidaria); border-color: var(--partidaria); transform: scale(1.2); }
+  .timeline-step.active .label{ color: var(--text); }
+  .timeline-step:hover .label{ color: var(--muted); }
+
+  @media (max-width: 920px){
+    .timeline-body{ padding: 18px 16px 18px; }
+    .timeline-mapcanvas svg{ max-height:42vh; }
+    .timeline-step .label{ font-size:9.5px; }
+  }
+
   .compare-topbar{
     display:flex; align-items:flex-start; justify-content:space-between; gap:20px;
     padding: 32px 40px 20px; border-bottom:1px solid var(--line);
@@ -282,7 +358,7 @@
 
   .compare-legend{
     display:flex; flex-wrap:wrap; align-content:flex-start; gap:8px;
-    margin-bottom:16px; min-height:76px;
+    margin-bottom:16px; min-height:104px;
   }
   .compare-chip{
     display:flex; align-items:center; gap:7px;
@@ -295,12 +371,17 @@
   .chip-dot{ width:9px; height:9px; border-radius:3px; flex:none; }
   .chip-count{ color:var(--muted-2); font-family:'Rubik Mono One', monospace; font-size:10.5px; }
 
+  .compare-gradient-wrap{ width:100%; }
   .compare-gradient-legend{
     display:flex; align-items:center; gap:10px; width:100%;
     font-family:'Rubik Mono One', monospace; font-size:11px; color:var(--muted-2);
   }
   .grad-bar{
     flex:1; height:12px; border-radius:100px; border:1px solid var(--line-soft);
+  }
+  .grad-caption{
+    margin: 8px 0 0; font-size:10.5px; line-height:1.4; color: var(--muted-2);
+    font-family:'Rubik', sans-serif;
   }
   .value-label{
     font-family:'Rubik', sans-serif; font-weight:700; font-size:22px;
@@ -457,7 +538,7 @@
         </div>
       </div>
       <p class="lede">Cada una de las 24 jurisdicciones argentinas define su propio instrumento de votación. Tocá una provincia en el mapa para ver su boleta, la legislación que la regula, cómo se organiza su Poder Legislativo y cómo se eligen sus cargos.</p>
-      <p class="lede lede-more">Si te interesa saber más sobre tipos de boletas y su relación con los resultados electorales, <a class="inline-link" href="https://gsagarraga.github.io/eltipodeboleta.importa" target="_blank" rel="noopener">aquí podés encontrar más información</a>.</p>
+      <p class="lede lede-more">Si te interesa saber más sobre tipos de boletas y su relación con los resultados electorales, <a class="inline-link" href="https://gsagarraga.github.io/eltipodeboleta.importa/" target="_blank" rel="noopener">aquí podés encontrar más información</a>.</p>
     </div>
 
     <div class="legend" id="legend">
@@ -492,6 +573,26 @@
         <span class="compare-cta-sub">Visualizá dos mapas lado a lado: tipo de boleta, legislatura, primarias, partido gobernante o alianza presidencial ganadora.</span>
       </span>
     </button>
+
+    <button class="compare-cta" id="timelineToggle" type="button">
+      <span class="compare-cta-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
+      </span>
+      <span class="compare-cta-text">
+        <span class="compare-cta-title">Línea de tiempo electoral</span>
+        <span class="compare-cta-sub">Mirá cómo cambió la alianza ganadora en cada provincia, elección por elección (2015-2023).</span>
+      </span>
+    </button>
+
+    <a class="compare-cta" href="tabla.html" target="_blank" rel="noopener">
+      <span class="compare-cta-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </span>
+      <span class="compare-cta-text">
+        <span class="compare-cta-title">Tabla de datos</span>
+        <span class="compare-cta-sub">Los 24 distritos y las 13 variables en una tabla ordenable, en una pestaña nueva.</span>
+      </span>
+    </a>
 
     <div class="note">
       <b style="color:var(--muted)">Fuente:</b> elaboración propia según la legislación electoral de cada provincia al 20 de agosto de 2026.
@@ -572,6 +673,37 @@
       </div>
       <p class="compare-credit">Tocá una provincia para ver su ficha completa.</p>
     </section>
+  </div>
+</div>
+
+<!-- ============ TIMELINE MODE ============ -->
+<div class="timeline-app" id="timelineApp">
+  <div class="compare-topbar">
+    <div>
+      <p class="eyebrow">Línea de tiempo electoral</p>
+      <h2>Alianza ganadora, elección por elección (2015-2023)</h2>
+    </div>
+    <div class="compare-topbar-actions">
+      <button class="compare-btn compare-btn-ghost" id="timelineExit" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        Volver a vista simple
+      </button>
+    </div>
+  </div>
+
+  <div class="timeline-body">
+    <div class="timeline-legend" id="timelineLegend"></div>
+    <div class="timeline-mapcanvas">
+      <svg id="mapsvgT" viewBox="-10 -644 816 1885" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <p class="compare-credit">Tocá una provincia para ver su ficha completa. Pausá en cualquier momento para inspeccionar un año en detalle.</p>
+
+    <div class="timeline-controls">
+      <button class="timeline-play" id="timelinePlay" type="button" aria-label="Reproducir">
+        <svg id="timelinePlayIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,4 20,12 6,20"/></svg>
+      </button>
+      <div class="timeline-steps" id="timelineSteps"></div>
+    </div>
   </div>
 </div>
 
@@ -1000,80 +1132,180 @@ const POBLACION_2022 = {
   santafe: 3544908, santiago: 1060906, tierradelfuego: 185732, tucuman: 1731820
 };
 
+// Índice de Desarrollo Humano por provincia. Fuente: PNUD Argentina,
+// última desagregación provincial publicada (año 2021).
+const IDH_PROVINCIAL = {
+  caba: 0.882, lapampa: 0.861, chubut: 0.858, tierradelfuego: 0.856, santacruz: 0.854,
+  mendoza: 0.848, salta: 0.844, catamarca: 0.844, rionegro: 0.844, sanluis: 0.843,
+  misiones: 0.842, buenosaires: 0.842, santafe: 0.841, tucuman: 0.841, cordoba: 0.841,
+  larioja: 0.840, jujuy: 0.840, corrientes: 0.839, sanjuan: 0.838, entrerios: 0.836,
+  santiago: 0.833, neuquen: 0.832, formosa: 0.822, chaco: 0.808
+};
+
+// Densidad poblacional (hab/km²). Población: Censo 2022 (INDEC). Superficie:
+// Informe de superficies del IGN. Para Tierra del Fuego se usa la superficie de
+// la Isla Grande (20.698 km²) y no la jurisdicción completa (que incluye el
+// reclamo antártico e islas), porque con esa base la densidad da casi cero y
+// no refleja dónde vive la población.
+const DENSIDAD_PROVINCIAL = {
+  buenosaires: 57.27, caba: 15169, catamarca: 4.23, chaco: 11.32, chubut: 2.64,
+  cordoba: 23.30, corrientes: 13.61, entrerios: 18.21, formosa: 8.05, jujuy: 15.26,
+  lapampa: 2.52, larioja: 4.20, mendoza: 13.71, misiones: 42.70, neuquen: 7.52,
+  rionegro: 3.71, salta: 9.29, sanjuan: 9.31, sanluis: 7.19, santacruz: 1.38,
+  santafe: 26.60, santiago: 7.75, tierradelfuego: 8.4, tucuman: 76.65
+};
+
+// Región geográfica/histórica de cada provincia (clasificación estándar).
+const REGION_PROVINCIAL = {
+  jujuy: "noa", salta: "noa", catamarca: "noa", santiago: "noa", tucuman: "noa",
+  formosa: "nea", chaco: "nea", corrientes: "nea", misiones: "nea",
+  mendoza: "cuyo", sanjuan: "cuyo", sanluis: "cuyo", larioja: "cuyo",
+  caba: "centro", buenosaires: "centro", cordoba: "centro", santafe: "centro", entrerios: "centro", lapampa: "centro",
+  neuquen: "patagonia", rionegro: "patagonia", chubut: "patagonia", santacruz: "patagonia", tierradelfuego: "patagonia"
+};
+const REGION_CATEGORIES = {
+  noa: "Noroeste (NOA)", nea: "Nordeste (NEA)", cuyo: "Cuyo",
+  centro: "Centro / Pampeana", patagonia: "Patagonia"
+};
+
+// Actividad económica principal por provincia (caracterización general,
+// no una cifra puntual que pueda quedar desactualizada).
+const ACTIVIDAD_PROVINCIAL = {
+  buenosaires: "industria", caba: "servicios", catamarca: "mineria", chaco: "agro",
+  chubut: "hidrocarburos", cordoba: "agro", corrientes: "agro", entrerios: "agro",
+  formosa: "agro", jujuy: "mineria", lapampa: "agro", larioja: "industria",
+  mendoza: "agro", misiones: "turismo", neuquen: "hidrocarburos", rionegro: "agro",
+  salta: "agro", sanjuan: "mineria", sanluis: "industria", santacruz: "hidrocarburos",
+  santafe: "agro", santiago: "agro", tierradelfuego: "industria", tucuman: "agro"
+};
+const ACTIVIDAD_CATEGORIES = {
+  agro: "Agropecuaria", industria: "Industria", mineria: "Minería",
+  hidrocarburos: "Hidrocarburos", servicios: "Servicios", turismo: "Turismo"
+};
+
 // Variables disponibles para mapear. Cada una define cómo obtener su valor
 // categórico por provincia (field directo, o getValue cuando hay que derivarlo)
 // y las categorías/colores con los que se pinta el mapa. Las de type:"quantitative"
 // usan una escala de color continua (gradiente) en vez de categorías fijas.
 const VARIABLES = [
-  { id: "boleta", label: "Tipo de boleta electoral", field: "cat", categories: CAT_LABEL },
+  { id: "boleta", label: "Tipo de boleta electoral", field: "cat", categories: CAT_LABEL, group: "Sistema electoral" },
   {
     id: "legislatura",
     label: "Forma de organización del Poder Legislativo",
     getValue: p => p.legislatura === "Bicameral" ? "bicameral" : "unicameral",
-    categories: { bicameral: "Bicameral", unicameral: "Unicameral" }
+    categories: { bicameral: "Bicameral", unicameral: "Unicameral" },
+    group: "Sistema electoral"
   },
   {
     id: "primarias",
     label: "Elecciones primarias",
     getValue: p => /^sin\s+ele/i.test((p.primarias || "").trim()) ? "no" : "si",
-    categories: { si: "Sí", no: "No" }
+    categories: { si: "Sí", no: "No" },
+    group: "Sistema electoral"
   },
   {
     id: "gobierno",
     label: "Partido gobernante a nivel provincial",
     getValue: p => GOBIERNO_PROVINCIAL[p.id],
-    categories: { justicialista: "Partido Justicialista", pro: "PRO", ucr: "UCR", provincial: "Partido provincial" }
-  },
-  {
-    id: "alianza_2015_1",
-    label: "Alianza ganadora (presidencial) — 1ra vuelta 2015",
-    getValue: p => ALIANZA_PROVINCIAL[p.id]["2015_1"],
-    categories: ALIANZA_CATEGORIES_BY_YEAR["2015_1"]
-  },
-  {
-    id: "alianza_2015_2",
-    label: "Alianza ganadora (presidencial) — 2da vuelta 2015",
-    getValue: p => ALIANZA_PROVINCIAL[p.id]["2015_2"],
-    categories: ALIANZA_CATEGORIES_BY_YEAR["2015_2"]
-  },
-  {
-    id: "alianza_2019",
-    label: "Alianza ganadora (presidencial) — Elecciones generales 2019",
-    getValue: p => ALIANZA_PROVINCIAL[p.id]["2019"],
-    categories: ALIANZA_CATEGORIES_BY_YEAR["2019"]
-  },
-  {
-    id: "alianza_2023_1",
-    label: "Alianza ganadora (presidencial) — 1ra vuelta 2023",
-    getValue: p => ALIANZA_PROVINCIAL[p.id]["2023_1"],
-    categories: ALIANZA_CATEGORIES_BY_YEAR["2023_1"]
-  },
-  {
-    id: "alianza_2023_2",
-    label: "Alianza ganadora (presidencial) — 2da vuelta 2023",
-    getValue: p => ALIANZA_PROVINCIAL[p.id]["2023_2"],
-    categories: ALIANZA_CATEGORIES_BY_YEAR["2023_2"]
+    categories: { justicialista: "Partido Justicialista", pro: "PRO", ucr: "UCR", provincial: "Partido provincial" },
+    group: "Sistema electoral"
   },
   {
     id: "diputados",
     label: "Cantidad de diputados/as nacionales por distrito",
     type: "quantitative",
     unit: "diputados/as",
-    getValue: p => DIPUTADOS_PROVINCIAL[p.id]
+    source: "Cámara Nacional Electoral",
+    getValue: p => DIPUTADOS_PROVINCIAL[p.id],
+    group: "Sistema electoral"
   },
   {
     id: "padron",
     label: "Electores habilitados (padrón 2025)",
     type: "quantitative",
     unit: "electores",
-    getValue: p => PADRON_2025[p.id]
+    source: "Cámara Nacional Electoral, padrón definitivo, elecciones legislativas 26/10/2025",
+    getValue: p => PADRON_2025[p.id],
+    group: "Sistema electoral"
+  },
+  {
+    id: "alianza_2015_1",
+    label: "Alianza ganadora (presidencial) — 1ra vuelta 2015",
+    getValue: p => ALIANZA_PROVINCIAL[p.id]["2015_1"],
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2015_1"],
+    group: "Resultados electorales"
+  },
+  {
+    id: "alianza_2015_2",
+    label: "Alianza ganadora (presidencial) — 2da vuelta 2015",
+    getValue: p => ALIANZA_PROVINCIAL[p.id]["2015_2"],
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2015_2"],
+    group: "Resultados electorales"
+  },
+  {
+    id: "alianza_2019",
+    label: "Alianza ganadora (presidencial) — Elecciones generales 2019",
+    getValue: p => ALIANZA_PROVINCIAL[p.id]["2019"],
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2019"],
+    group: "Resultados electorales"
+  },
+  {
+    id: "alianza_2023_1",
+    label: "Alianza ganadora (presidencial) — 1ra vuelta 2023",
+    getValue: p => ALIANZA_PROVINCIAL[p.id]["2023_1"],
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2023_1"],
+    group: "Resultados electorales"
+  },
+  {
+    id: "alianza_2023_2",
+    label: "Alianza ganadora (presidencial) — 2da vuelta 2023",
+    getValue: p => ALIANZA_PROVINCIAL[p.id]["2023_2"],
+    categories: ALIANZA_CATEGORIES_BY_YEAR["2023_2"],
+    group: "Resultados electorales"
   },
   {
     id: "poblacion",
     label: "Población total (Censo 2022)",
     type: "quantitative",
     unit: "habitantes",
-    getValue: p => POBLACION_2022[p.id]
+    source: "INDEC, Censo Nacional de Población, Hogares y Viviendas 2022 (resultados definitivos)",
+    getValue: p => POBLACION_2022[p.id],
+    group: "Demografía"
+  },
+  {
+    id: "densidad",
+    label: "Densidad poblacional (hab/km²)",
+    type: "quantitative",
+    unit: "hab/km²",
+    source: "INDEC (Censo 2022) e IGN (superficies). Tierra del Fuego calculada solo sobre la Isla Grande",
+    format: v => v.toLocaleString('es-AR', {maximumFractionDigits:1})+' hab/km²',
+    getValue: p => DENSIDAD_PROVINCIAL[p.id],
+    group: "Demografía"
+  },
+  {
+    id: "region",
+    label: "Región geográfica/histórica",
+    getValue: p => REGION_PROVINCIAL[p.id],
+    categories: REGION_CATEGORIES,
+    group: "Geografía"
+  },
+  {
+    id: "idh",
+    label: "Índice de Desarrollo Humano (PNUD 2021)",
+    type: "quantitative",
+    unit: "IDH",
+    source: "PNUD Argentina, última desagregación provincial publicada (2021). Las 24 jurisdicciones están en la categoría \"Muy Alto\" (IDH > 0,8); los matices reflejan diferencias relativas dentro del país, no respecto al resto del mundo",
+    format: v => "IDH "+v.toFixed(3).replace(".", ","),
+    scale: "rank",
+    getValue: p => IDH_PROVINCIAL[p.id],
+    group: "Desarrollo y economía"
+  },
+  {
+    id: "actividad",
+    label: "Actividad económica principal",
+    getValue: p => ACTIVIDAD_PROVINCIAL[p.id],
+    categories: ACTIVIDAD_CATEGORIES,
+    group: "Desarrollo y economía"
   }
 ];
 
@@ -1083,22 +1315,43 @@ function valueOf(varDef, p){
   return varDef.getValue ? varDef.getValue(p) : p[varDef.field];
 }
 
+// Formatea el valor de una variable cuantitativa para mostrar en el tooltip:
+// usa varDef.format si la variable define uno propio (para casos como IDH o
+// densidad, que necesitan su propia notación), o el formato genérico "valor unidad".
+function formatQuantValue(varDef, value){
+  if(varDef.format) return varDef.format(value);
+  return value.toLocaleString('es-AR')+' '+varDef.unit;
+}
+
 // Escala de verdes para variables cuantitativas: más intensidad (más oscuro y saturado)
-// a mayor valor. Devuelve un color hsl() interpolado entre el mínimo y el máximo del set.
-// Uso una escala logarítmica en vez de lineal: cuando la mayoría de los valores está
-// agrupada cerca del mínimo y unos pocos casos extremos (p. ej. Buenos Aires) se disparan
-// mucho más arriba, una escala lineal aplasta casi todos los colores contra el extremo
-// claro. El logaritmo separa mejor los matices entre los valores bajos e intermedios.
-function greenScale(value, min, max){
+// a mayor valor. Devuelve un color hsl() a partir de una posición relativa t (0 a 1).
+function colorFromT(t){
+  const l = 90 - t * 68;   // luminosidad: 90% (claro) -> 22% (oscuro)
+  const s = 32 + t * 46;   // saturación: 32% -> 78%
+  return { color: `hsl(152, ${s}%, ${l}%)`, t };
+}
+
+// Calcula la posición relativa (t, entre 0 y 1) de un valor dentro del conjunto de
+// las 24 jurisdicciones, según el modo de escala de la variable:
+// - "rank" (por posición/orden): cada valor distinto ocupa un escalón parejo de color,
+//   sin importar cuán cerca esté numéricamente del siguiente. Pensado para variables de
+//   rango muy angosto (como el IDH, donde todas las provincias están entre 0,80 y 0,88)
+//   donde una escala por valor absoluto casi no se distingue a simple vista.
+// - logarítmica (default): buena cuando unos pocos casos extremos (p. ej. Buenos Aires
+//   en diputados o población) dominan el rango y aplastarían el resto con una escala lineal.
+function computeT(varDef, value, allValues){
+  if(varDef.scale === 'rank'){
+    const uniqueSorted = [...new Set(allValues)].sort((a,b)=>a-b);
+    const idx = uniqueSorted.indexOf(value);
+    return uniqueSorted.length > 1 ? idx / (uniqueSorted.length - 1) : 0.5;
+  }
+  const min = Math.min(...allValues), max = Math.max(...allValues);
   const safeMin = Math.max(min, 1);
   const safeMax = Math.max(max, safeMin + 1);
   const logMin = Math.log(safeMin);
   const logMax = Math.log(safeMax);
   const logV = Math.log(Math.max(value, safeMin));
-  const t = logMax > logMin ? (logV - logMin) / (logMax - logMin) : 0.5;
-  const l = 90 - t * 68;   // luminosidad: 90% (claro) -> 22% (oscuro)
-  const s = 32 + t * 46;   // saturación: 32% -> 78%
-  return { color: `hsl(152, ${s}%, ${l}%)`, t };
+  return logMax > logMin ? (logV - logMin) / (logMax - logMin) : 0.5;
 }
 
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -1240,11 +1493,20 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
     if(el) el.classList.toggle('cross-hover', on);
   }
 
+  // Agrupa las variables por "group" en <optgroup> para que el selector se lea
+  // organizado por tipo, en vez de una lista plana de 14 opciones.
+  const groupEls = {};
   VARIABLES.forEach(v=>{
+    const groupName = v.group || "Otras";
+    if(!groupEls[groupName]){
+      groupEls[groupName] = document.createElement('optgroup');
+      groupEls[groupName].label = groupName;
+      selectEl.appendChild(groupEls[groupName]);
+    }
     const opt = document.createElement('option');
     opt.value = v.id;
     opt.textContent = v.label;
-    selectEl.appendChild(opt);
+    groupEls[groupName].appendChild(opt);
   });
 
   function renderLegend(varDef){
@@ -1252,13 +1514,25 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
     if(varDef.type === 'quantitative'){
       const vals = PROVINCES.map(p=>valueOf(varDef,p));
       const min = Math.min(...vals), max = Math.max(...vals);
+      const wrap = document.createElement('div');
+      wrap.className = 'compare-gradient-wrap';
       const bar = document.createElement('div');
       bar.className = 'compare-gradient-legend';
-      bar.innerHTML = '<span class="grad-min">'+min.toLocaleString('es-AR')+'</span>'
+      bar.innerHTML = '<span class="grad-min">'+formatQuantValue(varDef,min)+'</span>'
         + '<span class="grad-bar" style="background:linear-gradient(90deg, '
-          + greenScale(min,min,max).color + ', ' + greenScale(max,min,max).color + ')"></span>'
-        + '<span class="grad-max">'+max.toLocaleString('es-AR')+'</span>';
-      legendEl.appendChild(bar);
+          + colorFromT(0).color + ', ' + colorFromT(1).color + ')"></span>'
+        + '<span class="grad-max">'+formatQuantValue(varDef,max)+'</span>';
+      wrap.appendChild(bar);
+      const captionParts = [];
+      if(varDef.source) captionParts.push('Fuente: '+varDef.source);
+      captionParts.push(varDef.scale === 'rank'
+        ? 'escala por orden: cada provincia ocupa un escalón de color según su posición en el ranking, no según la distancia numérica real (útil cuando los valores están muy agrupados, como acá)'
+        : 'escala logarítmica: acentúa las diferencias entre los valores más bajos');
+      const caption = document.createElement('p');
+      caption.className = 'grad-caption';
+      caption.textContent = captionParts.join(' · ');
+      wrap.appendChild(caption);
+      legendEl.appendChild(wrap);
       return;
     }
     Object.keys(varDef.categories).forEach(catKey=>{
@@ -1287,10 +1561,9 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
   function renderProvinces(varDef){
     svgEl.innerHTML = '';
     const isQuant = varDef.type === 'quantitative';
-    let min = 0, max = 0;
+    let allVals = [];
     if(isQuant){
-      const vals = PROVINCES.map(p=>valueOf(varDef,p));
-      min = Math.min(...vals); max = Math.max(...vals);
+      allVals = PROVINCES.map(p=>valueOf(varDef,p));
     }
 
     PROVINCES.filter(p=>p.id!=='caba').forEach(p=>{
@@ -1302,14 +1575,14 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
       el.dataset.id = p.id;
       el.dataset.cat = catVal;
       if(isQuant){
-        const sc = greenScale(catVal, min, max);
+        const sc = colorFromT(computeT(varDef, catVal, allVals));
         el.setAttribute('class','province');
         el.style.fill = sc.color;
       } else {
         el.setAttribute('class','province ' + catVal);
       }
       el.addEventListener('click', ()=>openPanel(p));
-      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? p.name+' — '+catVal.toLocaleString('es-AR')+' '+varDef.unit : p.name));
+      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? p.name+' — '+formatQuantValue(varDef,catVal) : p.name));
       el.addEventListener('mouseleave', hideTooltip);
       el.addEventListener('mouseenter', ()=>crossHighlight(p.id, true));
       el.addEventListener('mouseleave', ()=>crossHighlight(p.id, false));
@@ -1327,12 +1600,12 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
       el.dataset.cat = catVal;
       if(isQuant){
         el.setAttribute('class','province');
-        el.style.fill = greenScale(catVal, min, max).color;
+        el.style.fill = colorFromT(computeT(varDef, catVal, allVals)).color;
       } else {
         el.setAttribute('class','province ' + catVal);
       }
       el.addEventListener('click', ()=>openPanel(tdf));
-      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'Islas Malvinas (Tierra del Fuego) — '+catVal.toLocaleString('es-AR')+' '+varDef.unit : 'Islas Malvinas (Tierra del Fuego)'));
+      el.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'Islas Malvinas (Tierra del Fuego) — '+formatQuantValue(varDef,catVal) : 'Islas Malvinas (Tierra del Fuego)'));
       el.addEventListener('mouseleave', hideTooltip);
       el.addEventListener('mouseenter', ()=>crossHighlight('malvinas', true));
       el.addEventListener('mouseleave', ()=>crossHighlight('malvinas', false));
@@ -1351,14 +1624,14 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
     dot.setAttribute('class','caba-dot');
     let cabaScale = null;
     if(isQuant){
-      cabaScale = greenScale(catValCaba, min, max);
+      cabaScale = colorFromT(computeT(varDef, catValCaba, allVals));
       dot.style.fill = cabaScale.color;
     } else {
       dot.style.fill = 'var(--'+catValCaba+')';
     }
     g.appendChild(dot);
     g.addEventListener('click', ()=>openPanel(caba));
-    g.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'CABA — '+catValCaba.toLocaleString('es-AR')+' '+varDef.unit : 'CABA'));
+    g.addEventListener('mousemove', e=>showTooltip(e, isQuant ? 'CABA — '+formatQuantValue(varDef,catValCaba) : 'CABA'));
     g.addEventListener('mouseleave', hideTooltip);
     g.addEventListener('mouseenter', ()=>crossHighlight('caba', true));
     g.addEventListener('mouseleave', ()=>crossHighlight('caba', false));
@@ -1395,6 +1668,7 @@ function getShareURL(){
 let compareBuilt = false;
 function enterCompareMode(varA, varB){
   hideTooltip();
+  exitTimelineMode();
   document.body.classList.add('mode-compare');
   if(!compareBuilt){
     buildCompareMap('mapsvgA','legendA','varSelectA','updatedA', varA);
@@ -1419,6 +1693,149 @@ document.getElementById('compareShare').addEventListener('click', ()=>{
     window.prompt('Copiá el enlace:', url);
   }
 });
+
+// ============ LÍNEA DE TIEMPO ============
+// Recorre las 5 elecciones presidenciales relevadas (2015-2023) sobre un único
+// mapa. Se puede reproducir automáticamente o, si se pausa (o se toca un año
+// puntual del selector inferior), queda fijo en ese año para poder inspeccionarlo
+// con el mismo detalle que en cualquier otro modo (tooltip, click a la ficha).
+const TIMELINE_STEPS = [
+  { varId: "alianza_2015_1", label: "2015", sub: "1ra vta" },
+  { varId: "alianza_2015_2", label: "2015", sub: "2da vta" },
+  { varId: "alianza_2019", label: "2019", sub: "gral." },
+  { varId: "alianza_2023_1", label: "2023", sub: "1ra vta" },
+  { varId: "alianza_2023_2", label: "2023", sub: "2da vta" }
+];
+let timelineBuilt = false;
+let timelineStep = 0;
+let timelineTimer = null;
+let timelineRenderer = null;
+
+function buildTimeline(){
+  const svgEl = document.getElementById('mapsvgT');
+  const legendEl = document.getElementById('timelineLegend');
+  const stepsEl = document.getElementById('timelineSteps');
+
+  TIMELINE_STEPS.forEach((step, i)=>{
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'timeline-step';
+    btn.innerHTML = '<span class="dot"></span><span class="label">'+step.label+'<br>'+step.sub+'</span>';
+    btn.addEventListener('click', ()=>{
+      stopTimelinePlayback();
+      timelineStep = i;
+      renderTimelineStep();
+    });
+    stepsEl.appendChild(btn);
+  });
+
+  function renderLegend(varDef){
+    legendEl.innerHTML = '';
+    Object.keys(varDef.categories).forEach(catKey=>{
+      const n = PROVINCES.filter(p=>valueOf(varDef,p)===catKey).length;
+      const chip = document.createElement('div');
+      chip.className = 'compare-chip';
+      chip.innerHTML = '<span class="chip-dot" style="background:var(--'+catKey+')"></span>'
+        + '<span class="chip-label">'+varDef.categories[catKey]+'</span>'
+        + '<span class="chip-count">'+n+'</span>';
+      legendEl.appendChild(chip);
+    });
+  }
+
+  function renderMap(varDef){
+    svgEl.innerHTML = '';
+    PROVINCES.filter(p=>p.id!=='caba').forEach(p=>{
+      const d = PROVINCE_D[p.id];
+      if(!d) return;
+      const catVal = valueOf(varDef,p);
+      const el = document.createElementNS(SVG_NS,'path');
+      el.setAttribute('d', d);
+      el.setAttribute('class','province ' + catVal);
+      el.dataset.id = p.id;
+      el.dataset.cat = catVal;
+      el.addEventListener('click', ()=>openPanel(p));
+      el.addEventListener('mousemove', e=>showTooltip(e,p.name));
+      el.addEventListener('mouseleave', hideTooltip);
+      svgEl.appendChild(el);
+    });
+    const tdf = PROVINCES.find(p=>p.id==='tierradelfuego');
+    const dMalvinas = PROVINCE_D['malvinas'];
+    if(dMalvinas){
+      const catVal = valueOf(varDef,tdf);
+      const el = document.createElementNS(SVG_NS,'path');
+      el.setAttribute('d', dMalvinas);
+      el.setAttribute('class','province ' + catVal);
+      el.dataset.id = 'malvinas';
+      el.dataset.cat = catVal;
+      el.addEventListener('click', ()=>openPanel(tdf));
+      el.addEventListener('mousemove', e=>showTooltip(e,'Islas Malvinas (Tierra del Fuego)'));
+      el.addEventListener('mouseleave', hideTooltip);
+      svgEl.appendChild(el);
+    }
+    const caba = PROVINCES.find(p=>p.id==='caba');
+    const catValCaba = valueOf(varDef,caba);
+    const g = document.createElementNS(SVG_NS,'g');
+    g.setAttribute('class','caba-pin');
+    g.dataset.id = 'caba';
+    g.dataset.cat = catValCaba;
+    const dot = document.createElementNS(SVG_NS,'circle');
+    dot.setAttribute('cx', 552.8); dot.setAttribute('cy', 79.3); dot.setAttribute('r', 18);
+    dot.setAttribute('class','caba-dot');
+    dot.style.fill = 'var(--'+catValCaba+')';
+    g.appendChild(dot);
+    g.addEventListener('click', ()=>openPanel(caba));
+    g.addEventListener('mousemove', e=>showTooltip(e,'CABA'));
+    g.addEventListener('mouseleave', hideTooltip);
+    svgEl.appendChild(g);
+  }
+
+  timelineRenderer = function(){
+    const step = TIMELINE_STEPS[timelineStep];
+    const varDef = VARIABLES.find(v=>v.id===step.varId);
+    renderMap(varDef);
+    renderLegend(varDef);
+    stepsEl.querySelectorAll('.timeline-step').forEach((btn,i)=>{
+      btn.classList.toggle('active', i===timelineStep);
+    });
+  };
+  timelineRenderer();
+}
+
+function renderTimelineStep(){
+  if(timelineRenderer) timelineRenderer();
+}
+
+function startTimelinePlayback(){
+  document.getElementById('timelinePlayIcon').innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+  timelineTimer = setInterval(()=>{
+    timelineStep = (timelineStep + 1) % TIMELINE_STEPS.length;
+    renderTimelineStep();
+  }, 1800);
+}
+function stopTimelinePlayback(){
+  if(timelineTimer){ clearInterval(timelineTimer); timelineTimer = null; }
+  document.getElementById('timelinePlayIcon').innerHTML = '<polygon points="6,4 20,12 6,20"/>';
+}
+document.getElementById('timelinePlay').addEventListener('click', ()=>{
+  if(timelineTimer) stopTimelinePlayback();
+  else startTimelinePlayback();
+});
+
+function enterTimelineMode(){
+  hideTooltip();
+  exitCompareMode();
+  document.body.classList.add('mode-timeline');
+  if(!timelineBuilt){
+    buildTimeline();
+    timelineBuilt = true;
+  }
+}
+function exitTimelineMode(){
+  stopTimelinePlayback();
+  document.body.classList.remove('mode-timeline');
+}
+document.getElementById('timelineToggle').addEventListener('click', enterTimelineMode);
+document.getElementById('timelineExit').addEventListener('click', exitTimelineMode);
 
 // Si la URL trae parámetros de comparación (?compare=1&a=...&b=...), abrir el modo
 // de comparación directamente con esas variables ya seleccionadas.
