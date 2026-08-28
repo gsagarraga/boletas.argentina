@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tabla de datos — Sistemas electorales provinciales, Argentina</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Cpath d='M20 30 L44 30 L41 54 Q41 56 39 56 L25 56 Q23 56 23 54 Z' fill='%235b8ff2'/%3E%3Crect x='16' y='22' width='32' height='9' rx='3' fill='%235b8ff2'/%3E%3Crect x='28' y='19' width='8' height='5' rx='1' fill='%230a0a0a'/%3E%3Cg transform='rotate(-18 34 14)'%3E%3Crect x='27' y='6' width='14' height='18' rx='1.5' fill='%2334c98f' stroke='%230a0a0a' stroke-width='1.4'/%3E%3Cline x1='30' y1='11' x2='38' y2='11' stroke='%230a0a0a' stroke-width='1.2'/%3E%3Cline x1='30' y1='15' x2='38' y2='15' stroke='%230a0a0a' stroke-width='1.2'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+  :root{
+    --bg:#0a0a0a; --bg-soft:#111111; --text:#f2f2f2; --muted:#a8a8a8; --muted-2:#6e6e6e;
+    --line:#232323; --line-soft:#1a1a1a;
+    --partidaria:#5b8ff2; --electronica:#34c98f; --bup:#e4a333;
+    --blue-gradient: linear-gradient(135deg, #8fb2f7, #3f6fd6);
+  }
+  *{ box-sizing:border-box; }
+  html,body{ margin:0; padding:0; background:var(--bg); color:var(--text); font-family:'Rubik',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  a{ color:inherit; }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; gap:20px;
+    padding: 26px 40px; border-bottom:1px solid var(--line); background:var(--bg-soft);
+    flex-wrap:wrap;
+  }
+  .topbar-title{ display:flex; align-items:center; gap:14px; }
+  .icon-badge{
+    flex:none; width:38px; height:38px; border-radius:10px; background:var(--blue-gradient);
+    display:flex; align-items:center; justify-content:center; color:#fff;
+  }
+  .topbar h1{ font-size:19px; margin:0; font-weight:800; letter-spacing:-.01em; }
+  .topbar p{ margin:2px 0 0; font-size:12.5px; color:var(--muted-2); }
+  .back-link{
+    display:flex; align-items:center; gap:8px; text-decoration:none; color:var(--text);
+    border:1px solid var(--line); border-radius:9px; padding:9px 15px; font-size:13px; font-weight:600;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .back-link:hover{ border-color:var(--muted-2); background:#161616; }
+
+  .search-bar{ padding: 18px 40px 0; }
+  .search-input{
+    width:100%; max-width:340px; background:#0d0d0d; border:1px solid var(--line); border-radius:9px;
+    color:var(--text); padding:10px 14px; font-size:14px; font-family:inherit;
+  }
+  .search-input::placeholder{ color:var(--muted-2); }
+
+  .table-wrap{ padding: 18px 40px 60px; overflow-x:auto; }
+  table{ border-collapse:collapse; width:100%; min-width:1500px; font-size:13.5px; }
+  thead th{
+    position:sticky; top:0; background:#111111; text-align:left; padding:12px 14px;
+    border-bottom:2px solid var(--line); cursor:pointer; user-select:none; white-space:nowrap;
+    color:var(--muted); font-weight:600; font-size:12.5px;
+  }
+  thead th:hover{ color:var(--text); }
+  thead th .arrow{ font-size:10px; margin-left:5px; color:var(--partidaria); }
+  tbody td{ padding:11px 14px; border-bottom:1px solid var(--line-soft); white-space:nowrap; }
+  tbody tr:hover{ background:#111318; }
+  td.num{ font-family:'DM Mono', monospace; color:var(--muted); }
+  td.name{ font-weight:700; color:var(--text); position:sticky; left:0; background:var(--bg); }
+  tbody tr:hover td.name{ background:#111318; }
+
+  .badge{ display:inline-block; padding:3px 9px; border-radius:100px; font-size:12px; font-weight:600; }
+  .b-bup{ background:rgba(228,163,51,.15); color:#e4a333; }
+  .b-bue{ background:rgba(52,201,143,.15); color:#34c98f; }
+  .b-partidaria{ background:rgba(91,143,242,.15); color:#5b8ff2; }
+  .b-si{ background:rgba(71,194,122,.15); color:#47c27a; }
+  .b-no{ background:rgba(212,84,94,.15); color:#d4545e; }
+
+  .footnote{ padding: 0 40px 40px; font-size:12px; color:var(--muted-2); line-height:1.6; max-width:900px; }
+
+  @media (max-width:720px){
+    .topbar{ padding:20px 18px; }
+    .search-bar{ padding:16px 18px 0; }
+    .table-wrap{ padding:16px 18px 40px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-title">
+    <div class="icon-badge">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 10l1.2 9.5a1.5 1.5 0 0 0 1.5 1.3h8.6a1.5 1.5 0 0 0 1.5-1.3L19 10"/>
+        <rect x="3.5" y="7.5" width="17" height="3" rx="1"/>
+        <path d="M9 4.5l6 3.4"/>
+      </svg>
+    </div>
+    <div>
+      <h1>Tabla de datos — 24 distritos</h1>
+      <p>Las mismas 13 variables del mapa, en formato tabla ordenable.</p>
+    </div>
+  </div>
+  <a class="back-link" href="mapa_electoral_v2.html">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    Volver al mapa
+  </a>
+</div>
+
+<div class="search-bar">
+  <input class="search-input" id="searchBox" type="text" placeholder="Buscar provincia...">
+</div>
+
+<div class="table-wrap">
+  <table id="dataTable">
+    <thead>
+      <tr id="headRow"></tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+</div>
+
+<p class="footnote">
+  <b style="color:var(--muted)">Fuentes:</b> elaboración propia según legislación electoral provincial vigente (act. 20/08/2026) ·
+  Cámara Nacional Electoral (diputados, padrón 2025) · INDEC (Censo 2022, población y densidad) · IGN (superficies) ·
+  PNUD Argentina (IDH, 2021). Autor: Gonzalo Sagarraga —
+  <a href="https://instagram.com/gsagarraga" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;">Instagram</a> ·
+  <a href="https://linkedin.com/in/gsagarraga" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;">LinkedIn</a>
+</p>
+
+<script>
+const ROWS = [{"provincia": "Buenos Aires", "region": "Centro/Pampeana", "boleta": "Partidaria", "legislatura": "Bicameral", "primarias": "Sí", "gobierno": "Justicialista", "diputados": 70, "padron": 13353974, "poblacion": 17523996, "densidad": 57.27, "idh": 0.842, "actividad": "Industria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "FPV/FdT/UxP"}, {"provincia": "CABA", "region": "Centro/Pampeana", "boleta": "BUE", "legislatura": "Unicameral", "primarias": "Sí", "gobierno": "PRO", "diputados": 25, "padron": 2520249, "poblacion": 3121707, "densidad": 15169, "idh": 0.882, "actividad": "Servicios", "alianza2015_1": "Cambiemos/JxC", "alianza2015_2": "Cambiemos/JxC", "alianza2019": "Cambiemos/JxC", "alianza2023_1": "Cambiemos/JxC", "alianza2023_2": "LLA"}, {"provincia": "Catamarca", "region": "NOA", "boleta": "Partidaria", "legislatura": "Bicameral", "primarias": "Sí", "gobierno": "Justicialista", "diputados": 5, "padron": 347282, "poblacion": 429562, "densidad": 4.23, "idh": 0.844, "actividad": "Minería", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "LLA"}, {"provincia": "Chaco", "region": "NEA", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "Sí", "gobierno": "UCR", "diputados": 7, "padron": 1013621, "poblacion": 1129606, "densidad": 11.32, "idh": 0.808, "actividad": "Agropecuaria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "FPV/FdT/UxP"}, {"provincia": "Chubut", "region": "Patagonia", "boleta": "BUP", "legislatura": "Unicameral", "primarias": "No", "gobierno": "PRO", "diputados": 5, "padron": 485052, "poblacion": 592621, "densidad": 2.64, "idh": 0.858, "actividad": "Hidrocarburos", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "Córdoba", "region": "Centro/Pampeana", "boleta": "BUP", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Justicialista", "diputados": 18, "padron": 3120707, "poblacion": 3840905, "densidad": 23.3, "idh": 0.841, "actividad": "Agropecuaria", "alianza2015_1": "Cambiemos/JxC", "alianza2015_2": "Cambiemos/JxC", "alianza2019": "Cambiemos/JxC", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "Corrientes", "region": "NEA", "boleta": "Partidaria", "legislatura": "Bicameral", "primarias": "No", "gobierno": "UCR", "diputados": 7, "padron": 951732, "poblacion": 1212696, "densidad": 13.61, "idh": 0.839, "actividad": "Agropecuaria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "LLA"}, {"provincia": "Entre Ríos", "region": "Centro/Pampeana", "boleta": "BUP", "legislatura": "Bicameral", "primarias": "Sí", "gobierno": "PRO", "diputados": 9, "padron": 1155693, "poblacion": 1425578, "densidad": 18.21, "idh": 0.836, "actividad": "Agropecuaria", "alianza2015_1": "Cambiemos/JxC", "alianza2015_2": "Cambiemos/JxC", "alianza2019": "Cambiemos/JxC", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "LLA"}, {"provincia": "Formosa", "region": "NEA", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Justicialista", "diputados": 5, "padron": 491558, "poblacion": 607419, "densidad": 8.05, "idh": 0.822, "actividad": "Agropecuaria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "FPV/FdT/UxP"}, {"provincia": "Jujuy", "region": "NOA", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "UCR", "diputados": 6, "padron": 602380, "poblacion": 811611, "densidad": 15.26, "idh": 0.84, "actividad": "Minería", "alianza2015_1": "Otro", "alianza2015_2": "Cambiemos/JxC", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "La Pampa", "region": "Centro/Pampeana", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "Sí", "gobierno": "Justicialista", "diputados": 5, "padron": 304693, "poblacion": 361859, "densidad": 2.52, "idh": 0.861, "actividad": "Agropecuaria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "Cambiemos/JxC", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "LLA"}, {"provincia": "La Rioja", "region": "Cuyo", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Justicialista", "diputados": 5, "padron": 310155, "poblacion": 383865, "densidad": 4.2, "idh": 0.84, "actividad": "Industria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "Cambiemos/JxC", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "LLA"}, {"provincia": "Mendoza", "region": "Cuyo", "boleta": "BUP", "legislatura": "Bicameral", "primarias": "Sí", "gobierno": "UCR", "diputados": 10, "padron": 1523848, "poblacion": 2043540, "densidad": 13.71, "idh": 0.848, "actividad": "Agropecuaria", "alianza2015_1": "Cambiemos/JxC", "alianza2015_2": "Cambiemos/JxC", "alianza2019": "Cambiemos/JxC", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "Misiones", "region": "NEA", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Partido provincial", "diputados": 7, "padron": 1006564, "poblacion": 1278873, "densidad": 42.7, "idh": 0.842, "actividad": "Turismo", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "Neuquén", "region": "Patagonia", "boleta": "BUE", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Partido provincial", "diputados": 5, "padron": 581437, "poblacion": 710814, "densidad": 7.52, "idh": 0.832, "actividad": "Hidrocarburos", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "Río Negro", "region": "Patagonia", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Partido provincial", "diputados": 5, "padron": 611533, "poblacion": 750768, "densidad": 3.71, "idh": 0.844, "actividad": "Agropecuaria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "LLA"}, {"provincia": "Salta", "region": "NOA", "boleta": "BUE", "legislatura": "Bicameral", "primarias": "No", "gobierno": "Partido provincial", "diputados": 7, "padron": 1117076, "poblacion": 1441351, "densidad": 9.29, "idh": 0.844, "actividad": "Agropecuaria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "San Juan", "region": "Cuyo", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Partido provincial", "diputados": 6, "padron": 620823, "poblacion": 822853, "densidad": 9.31, "idh": 0.838, "actividad": "Minería", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "San Luis", "region": "Cuyo", "boleta": "BUP", "legislatura": "Bicameral", "primarias": "Sí", "gobierno": "Partido provincial", "diputados": 5, "padron": 429732, "poblacion": 542069, "densidad": 7.19, "idh": 0.843, "actividad": "Industria", "alianza2015_1": "Otro", "alianza2015_2": "Cambiemos/JxC", "alianza2019": "Cambiemos/JxC", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "Santa Cruz", "region": "Patagonia", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Partido provincial", "diputados": 5, "padron": 272027, "poblacion": 337226, "densidad": 1.38, "idh": 0.854, "actividad": "Hidrocarburos", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "LLA"}, {"provincia": "Santa Fe", "region": "Centro/Pampeana", "boleta": "BUP", "legislatura": "Bicameral", "primarias": "Sí", "gobierno": "UCR", "diputados": 19, "padron": 2846454, "poblacion": 3544908, "densidad": 26.6, "idh": 0.841, "actividad": "Agropecuaria", "alianza2015_1": "Cambiemos/JxC", "alianza2015_2": "Cambiemos/JxC", "alianza2019": "Cambiemos/JxC", "alianza2023_1": "LLA", "alianza2023_2": "LLA"}, {"provincia": "Santiago del Estero", "region": "NOA", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "UCR", "diputados": 7, "padron": 826361, "poblacion": 1060906, "densidad": 7.75, "idh": 0.833, "actividad": "Agropecuaria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "FPV/FdT/UxP"}, {"provincia": "Tierra del Fuego", "region": "Patagonia", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Partido provincial", "diputados": 5, "padron": 153120, "poblacion": 185732, "densidad": 8.4, "idh": 0.856, "actividad": "Industria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "LLA"}, {"provincia": "Tucumán", "region": "NOA", "boleta": "Partidaria", "legislatura": "Unicameral", "primarias": "No", "gobierno": "Justicialista", "diputados": 9, "padron": 1341563, "poblacion": 1731820, "densidad": 76.65, "idh": 0.841, "actividad": "Agropecuaria", "alianza2015_1": "FPV/FdT/UxP", "alianza2015_2": "FPV/FdT/UxP", "alianza2019": "FPV/FdT/UxP", "alianza2023_1": "FPV/FdT/UxP", "alianza2023_2": "LLA"}];
+
+const COLUMNS = [
+  { key:"provincia", label:"Provincia", type:"text", sticky:true },
+  { key:"region", label:"Región", type:"text" },
+  { key:"boleta", label:"Tipo de boleta", type:"badge-boleta" },
+  { key:"legislatura", label:"Legislatura", type:"text" },
+  { key:"primarias", label:"Primarias", type:"badge-sino" },
+  { key:"gobierno", label:"Partido gobernante", type:"text" },
+  { key:"actividad", label:"Actividad principal", type:"text" },
+  { key:"diputados", label:"Diputados/as", type:"num" },
+  { key:"padron", label:"Padrón 2025", type:"num" },
+  { key:"poblacion", label:"Población 2022", type:"num" },
+  { key:"densidad", label:"Densidad (hab/km²)", type:"num" },
+  { key:"idh", label:"IDH 2021", type:"num" },
+  { key:"alianza2015_1", label:"Alianza 2015 (1ra)", type:"text" },
+  { key:"alianza2015_2", label:"Alianza 2015 (2da)", type:"text" },
+  { key:"alianza2019", label:"Alianza 2019", type:"text" },
+  { key:"alianza2023_1", label:"Alianza 2023 (1ra)", type:"text" },
+  { key:"alianza2023_2", label:"Alianza 2023 (2da)", type:"text" }
+];
+
+let sortKey = "provincia";
+let sortDir = 1;
+let filterText = "";
+
+function badgeFor(type, value){
+  if(type === 'badge-boleta'){
+    const cls = value === 'BUP' ? 'b-bup' : value === 'BUE' ? 'b-bue' : 'b-partidaria';
+    return '<span class="badge '+cls+'">'+value+'</span>';
+  }
+  if(type === 'badge-sino'){
+    return '<span class="badge '+(value==='Sí'?'b-si':'b-no')+'">'+value+'</span>';
+  }
+  return value;
+}
+
+function formatCell(col, value){
+  if(value === undefined || value === null) return '-';
+  if(col.type === 'num'){
+    if(col.key === 'idh') return value.toFixed(3).replace('.', ',');
+    if(col.key === 'densidad') return value.toLocaleString('es-AR', {maximumFractionDigits:2});
+    return value.toLocaleString('es-AR');
+  }
+  if(col.type === 'badge-boleta' || col.type === 'badge-sino') return badgeFor(col.type, value);
+  return value;
+}
+
+function renderHead(){
+  const tr = document.getElementById('headRow');
+  tr.innerHTML = '';
+  COLUMNS.forEach(col=>{
+    const th = document.createElement('th');
+    th.textContent = col.label;
+    if(sortKey === col.key){
+      const arrow = document.createElement('span');
+      arrow.className = 'arrow';
+      arrow.textContent = sortDir === 1 ? '▲' : '▼';
+      th.appendChild(arrow);
+    }
+    th.addEventListener('click', ()=>{
+      if(sortKey === col.key) sortDir *= -1;
+      else { sortKey = col.key; sortDir = 1; }
+      renderHead();
+      renderBody();
+    });
+    tr.appendChild(th);
+  });
+}
+
+function renderBody(){
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+  let data = ROWS.filter(r => r.provincia.toLowerCase().includes(filterText.toLowerCase()));
+  data.sort((a,b)=>{
+    const va = a[sortKey], vb = b[sortKey];
+    if(typeof va === 'number' && typeof vb === 'number') return (va-vb)*sortDir;
+    return String(va).localeCompare(String(vb), 'es') * sortDir;
+  });
+  data.forEach(row=>{
+    const tr = document.createElement('tr');
+    COLUMNS.forEach(col=>{
+      const td = document.createElement('td');
+      if(col.key === 'provincia') td.className = 'name';
+      else if(col.type === 'num') td.className = 'num';
+      td.innerHTML = formatCell(col, row[col.key]);
+      tr.appendChild(td);
+    });
+    tbody.appendChild(tr);
+  });
+}
+
+document.getElementById('searchBox').addEventListener('input', e=>{
+  filterText = e.target.value;
+  renderBody();
+});
+
+renderHead();
+renderBody();
+</script>
+</body>
+</html>
