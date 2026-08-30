@@ -13,7 +13,7 @@
     --blue-gradient: linear-gradient(135deg, #8fb2f7, #3f6fd6);
   }
   *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0; background:var(--bg); color:var(--text); font-family:'Rubik',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  html,body{ margin:0; padding:0 0 16px; background:var(--bg); color:var(--text); font-family:'Rubik',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
   a{ color:inherit; }
 
   .topbar{
@@ -42,8 +42,9 @@
   }
   .search-input::placeholder{ color:var(--muted-2); }
 
-  .table-wrap{ padding: 18px 40px 60px; overflow-x:auto; }
-  table{ border-collapse:collapse; width:100%; min-width:1500px; font-size:13.5px; }
+  .table-wrap{ padding: 18px 0 40px; overflow-x:auto; }
+  .table-inner{ display:inline-block; min-width:100%; padding: 0 40px; box-sizing:border-box; }
+  table{ border-collapse:collapse; width:100%; min-width:1460px; font-size:13.5px; }
   thead th{
     position:sticky; top:0; background:#111111; text-align:left; padding:12px 14px;
     border-bottom:2px solid var(--line); cursor:pointer; user-select:none; white-space:nowrap;
@@ -54,7 +55,7 @@
   tbody td{ padding:11px 14px; border-bottom:1px solid var(--line-soft); white-space:nowrap; }
   tbody tr:hover{ background:#111318; }
   td.num{ font-family:'DM Mono', monospace; color:var(--muted); }
-  td.name{ font-weight:700; color:var(--text); position:sticky; left:0; background:var(--bg); }
+  td.name{ font-weight:700; color:var(--text); position:sticky; left:40px; background:var(--bg); }
   tbody tr:hover td.name{ background:#111318; }
 
   .badge{ display:inline-block; padding:3px 9px; border-radius:100px; font-size:12px; font-weight:600; }
@@ -77,10 +78,35 @@
 
   .footnote{ padding: 0 40px 40px; font-size:12px; color:var(--muted-2); line-height:1.6; max-width:900px; }
 
+  .bottom-scrollbar{
+    position:fixed; left:0; right:0; bottom:0; height:16px; z-index:60;
+    overflow-x:scroll; overflow-y:hidden;
+    background:#111111; border-top:1px solid var(--line);
+    display:flex; align-items:center;
+  }
+  #bottomScrollbarInner{ height:1px; }
+
+  /* La tabla se sigue pudiendo arrastrar/scrollear con el trackpad o el mouse,
+     pero la barra visible es únicamente la fija del pie de pantalla — evita
+     tener dos barras (una nativa, pegada al final de la tabla, y otra fija)
+     que confundían más de lo que ayudaban. */
+  .table-wrap::-webkit-scrollbar{ display:none; }
+  .table-wrap{ scrollbar-width:none; -ms-overflow-style:none; }
+
+  .bottom-scrollbar::-webkit-scrollbar{ height:10px; }
+  .bottom-scrollbar::-webkit-scrollbar-track{ background: transparent; }
+  .bottom-scrollbar::-webkit-scrollbar-thumb{
+    background: #3a3a3a; border-radius:100px; border:2px solid #111111;
+  }
+  .bottom-scrollbar:hover::-webkit-scrollbar-thumb{ background: #4c4c4c; }
+  .bottom-scrollbar{ scrollbar-width: thin; scrollbar-color: #3a3a3a transparent; }
+
   @media (max-width:720px){
     .topbar{ padding:20px 18px; }
     .search-bar{ padding:16px 18px 0; }
-    .table-wrap{ padding:16px 18px 40px; }
+    .table-wrap{ padding:16px 0 30px; }
+    .table-inner{ padding:0 18px; }
+    td.name{ left:18px; }
   }
 </style>
 </head>
@@ -110,22 +136,34 @@
   <input class="search-input" id="searchBox" type="text" placeholder="Buscar provincia...">
 </div>
 
-<div class="table-wrap">
-  <table id="dataTable">
-    <thead>
-      <tr id="headRow"></tr>
-      <tr id="filterRow" class="filter-row"></tr>
-    </thead>
-    <tbody id="tableBody"></tbody>
-  </table>
+<div class="table-wrap" id="tableWrap">
+  <div class="table-inner">
+    <table id="dataTable">
+      <thead>
+        <tr id="headRow"></tr>
+        <tr id="filterRow" class="filter-row"></tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
 </div>
 
+<div class="bottom-scrollbar" id="bottomScrollbar"><div id="bottomScrollbarInner"></div></div>
+
 <p class="footnote">
-  <b style="color:var(--muted)">Fuentes:</b> elaboración propia según legislación electoral provincial vigente (act. 20/08/2026) ·
-  Cámara Nacional Electoral (diputados, padrón 2025) · INDEC (Censo 2022, población y densidad) · IGN (superficies) ·
-  PNUD Argentina (IDH, 2021) · CEPAL y Ministerio de Economía, vía Fundar/Argendata (PBG per cápita relativo, 2022). Autor: Gonzalo Sagarraga —
+  <b style="color:var(--muted)">Fuentes de los datos:</b><br>
+  · <b>Tipo de boleta, legislatura, primarias, partido gobernante:</b> elaboración propia según la legislación electoral de cada provincia vigente al 20/08/2026.<br>
+  · <b>Diputados/as nacionales y padrón 2025:</b> Cámara Nacional Electoral (CNE), padrón definitivo para las elecciones legislativas del 26/10/2025.<br>
+  · <b>Alianza ganadora (elecciones presidenciales 2015, 2019 y 2023):</b> elaboración propia en base a resultados oficiales de la Dirección Nacional Electoral / Cámara Nacional Electoral.<br>
+  · <b>Población total y densidad poblacional:</b> INDEC, Censo Nacional de Población, Hogares y Viviendas 2022 (resultados definitivos), y superficies del Instituto Geográfico Nacional (IGN). Tierra del Fuego calculada solo sobre la superficie de la Isla Grande.<br>
+  · <b>Región geográfica/histórica y actividad económica principal:</b> clasificación estándar / caracterización general, elaboración propia.<br>
+  · <b>Índice de Desarrollo Humano (IDH):</b> PNUD Argentina, última desagregación provincial publicada (2021).<br>
+  · <b>PBG per cápita relativo a la media nacional:</b> CEPAL y Ministerio de Economía de la Nación, "Desagregación provincial del valor agregado bruto de la Argentina, base 2004" — dato 2022, vía el dataset público de Fundar/Argendata.
+  <br><br>
+  <b style="color:var(--muted)">Autor:</b> Gonzalo Sagarraga —
   <a href="https://instagram.com/gsagarraga" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;">Instagram</a> ·
-  <a href="https://linkedin.com/in/gsagarraga" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;">LinkedIn</a>
+  <a href="https://linkedin.com/in/gsagarraga" target="_blank" rel="noopener" style="color:var(--muted);text-decoration:underline;">LinkedIn</a> ·
+  <a href="mailto:gsagarraga@gmail.com" style="color:var(--muted);text-decoration:underline;">gsagarraga@gmail.com</a>
 </p>
 
 <script>
@@ -281,7 +319,7 @@ document.getElementById('searchBox').addEventListener('input', e=>{
 });
 
 document.getElementById('backLink').addEventListener('click', function(e){
-  if(document.referrer && /mapa_electoral/i.test(document.referrer)){
+  if(document.referrer && /index\.html/i.test(document.referrer)){
     e.preventDefault();
     history.back();
   }
@@ -290,6 +328,33 @@ document.getElementById('backLink').addEventListener('click', function(e){
 
 renderHead();
 renderBody();
+
+// Barra de scroll horizontal fija al pie de la pantalla, sincronizada con el
+// scroll real de la tabla, para poder navegarla sin tener que bajar hasta el
+// final de la página.
+const tableWrap = document.getElementById('tableWrap');
+const bottomScrollbar = document.getElementById('bottomScrollbar');
+const bottomScrollbarInner = document.getElementById('bottomScrollbarInner');
+
+function syncScrollbarWidth(){
+  const inner = document.querySelector('.table-inner');
+  bottomScrollbarInner.style.width = inner.scrollWidth + 'px';
+}
+let syncingScroll = false;
+tableWrap.addEventListener('scroll', ()=>{
+  if(syncingScroll) return;
+  syncingScroll = true;
+  bottomScrollbar.scrollLeft = tableWrap.scrollLeft;
+  syncingScroll = false;
+});
+bottomScrollbar.addEventListener('scroll', ()=>{
+  if(syncingScroll) return;
+  syncingScroll = true;
+  tableWrap.scrollLeft = bottomScrollbar.scrollLeft;
+  syncingScroll = false;
+});
+window.addEventListener('resize', syncScrollbarWidth);
+syncScrollbarWidth();
 </script>
 </body>
 </html>
