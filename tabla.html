@@ -13,7 +13,7 @@
     --blue-gradient: linear-gradient(135deg, #8fb2f7, #3f6fd6);
   }
   *{ box-sizing:border-box; }
-  html,body{ margin:0; padding:0 0 16px; background:var(--bg); color:var(--text); font-family:'Rubik',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
+  html,body{ margin:0; padding:0 18px 18px 0; background:var(--bg); color:var(--text); font-family:'Rubik',system-ui,sans-serif; -webkit-font-smoothing:antialiased; }
   a{ color:inherit; }
 
   .topbar{
@@ -43,8 +43,8 @@
   .search-input::placeholder{ color:var(--muted-2); }
 
   .table-wrap{ padding: 18px 0 40px; overflow-x:auto; }
-  .table-inner{ display:inline-block; min-width:100%; padding: 0 40px; box-sizing:border-box; }
-  table{ border-collapse:collapse; width:100%; min-width:1460px; font-size:13.5px; }
+  .table-inner{ display:table; width:auto; padding: 0 40px; box-sizing:border-box; }
+  table{ border-collapse:collapse; width:auto; min-width:1460px; font-size:13.5px; }
   thead th{
     position:sticky; top:0; background:#111111; text-align:left; padding:12px 14px;
     border-bottom:2px solid var(--line); cursor:pointer; user-select:none; white-space:nowrap;
@@ -78,28 +78,51 @@
 
   .footnote{ padding: 0 40px 40px; font-size:12px; color:var(--muted-2); line-height:1.6; max-width:900px; }
 
-  .bottom-scrollbar{
-    position:fixed; left:0; right:0; bottom:0; height:16px; z-index:60;
-    overflow-x:scroll; overflow-y:hidden;
-    background:#111111; border-top:1px solid var(--line);
-    display:flex; align-items:center;
-  }
-  #bottomScrollbarInner{ height:1px; }
+  /* Ocultamos el scrollbar nativo de la página: el vertical propio (a la derecha)
+     lo reemplaza por completo. El scroll en sí (rueda, trackpad, teclado) sigue
+     funcionando igual, solo cambia el control visual. */
+  html{ scrollbar-width:none; -ms-overflow-style:none; }
+  html::-webkit-scrollbar{ display:none; }
 
-  /* La tabla se sigue pudiendo arrastrar/scrollear con el trackpad o el mouse,
-     pero la barra visible es únicamente la fija del pie de pantalla — evita
-     tener dos barras (una nativa, pegada al final de la tabla, y otra fija)
-     que confundían más de lo que ayudaban. */
+  /* Barra de scroll horizontal propia, fija al pie de la pantalla, siempre visible.
+     Hecha a mano (no depende del scrollbar nativo del navegador) para garantizar
+     que esté ahí sin importar el navegador, el dispositivo o el scroll vertical. */
+  .scroll-track{
+    position:fixed; left:0; right:18px; bottom:0; height:18px; z-index:100;
+    background:#111111; border-top:1px solid var(--line);
+    cursor:pointer;
+  }
+  .scroll-thumb{
+    position:absolute; top:4px; height:10px; min-width:40px; border-radius:100px;
+    background:#454545; cursor:grab;
+  }
+  .scroll-thumb:hover{ background:#565656; }
+  .scroll-thumb.dragging{ background:#666666; cursor:grabbing; }
+
+  /* Misma barra, en versión vertical, fija a la derecha de la pantalla. */
+  .scroll-track-v{
+    position:fixed; top:0; right:0; bottom:18px; width:18px; z-index:100;
+    background:#111111; border-left:1px solid var(--line);
+    cursor:pointer;
+  }
+  .scroll-thumb-v{
+    position:absolute; left:4px; width:10px; min-height:40px; border-radius:100px;
+    background:#454545; cursor:grab;
+  }
+  .scroll-thumb-v:hover{ background:#565656; }
+  .scroll-thumb-v.dragging{ background:#666666; cursor:grabbing; }
+
+  /* Esquina donde se cruzan ambas barras */
+  .scroll-corner{
+    position:fixed; right:0; bottom:0; width:18px; height:18px; z-index:100;
+    background:#111111; border-top:1px solid var(--line); border-left:1px solid var(--line);
+  }
+
+  /* La única barra horizontal visible es la fija de abajo (hecha a mano).
+     Esta nativa queda oculta (pero el scroll sigue funcionando con el
+     trackpad, la rueda del mouse, etc.) para no tener dos barras juntas. */
   .table-wrap::-webkit-scrollbar{ display:none; }
   .table-wrap{ scrollbar-width:none; -ms-overflow-style:none; }
-
-  .bottom-scrollbar::-webkit-scrollbar{ height:10px; }
-  .bottom-scrollbar::-webkit-scrollbar-track{ background: transparent; }
-  .bottom-scrollbar::-webkit-scrollbar-thumb{
-    background: #3a3a3a; border-radius:100px; border:2px solid #111111;
-  }
-  .bottom-scrollbar:hover::-webkit-scrollbar-thumb{ background: #4c4c4c; }
-  .bottom-scrollbar{ scrollbar-width: thin; scrollbar-color: #3a3a3a transparent; }
 
   @media (max-width:720px){
     .topbar{ padding:20px 18px; }
@@ -107,6 +130,9 @@
     .table-wrap{ padding:16px 0 30px; }
     .table-inner{ padding:0 18px; }
     td.name{ left:18px; }
+    .scroll-track-v, .scroll-corner{ display:none; }
+    html,body{ padding-right:0; }
+    .scroll-track{ right:0; }
   }
 </style>
 </head>
@@ -148,7 +174,9 @@
   </div>
 </div>
 
-<div class="bottom-scrollbar" id="bottomScrollbar"><div id="bottomScrollbarInner"></div></div>
+<div class="scroll-track" id="scrollTrack"><div class="scroll-thumb" id="scrollThumb"></div></div>
+<div class="scroll-track-v" id="scrollTrackV"><div class="scroll-thumb-v" id="scrollThumbV"></div></div>
+<div class="scroll-corner"></div>
 
 <p class="footnote">
   <b style="color:var(--muted)">Fuentes de los datos:</b><br>
@@ -247,7 +275,7 @@ function renderHead(){
     }
     th.addEventListener('click', ()=>{
       if(sortKey === col.key) sortDir *= -1;
-      else { sortKey = col.key; sortDir = 1; }
+      else { sortKey = col.key; sortDir = (col.type === 'num') ? -1 : 1; }
       renderHead();
       renderBody();
     });
@@ -331,30 +359,172 @@ renderBody();
 
 // Barra de scroll horizontal fija al pie de la pantalla, sincronizada con el
 // scroll real de la tabla, para poder navegarla sin tener que bajar hasta el
-// final de la página.
+// final de la página. Barra hecha a mano (track + thumb propios) en vez de
+// depender del scrollbar nativo del navegador metido en un div, que no
+// garantizaba quedar siempre visible en todos los casos.
 const tableWrap = document.getElementById('tableWrap');
-const bottomScrollbar = document.getElementById('bottomScrollbar');
-const bottomScrollbarInner = document.getElementById('bottomScrollbarInner');
+const scrollTrack = document.getElementById('scrollTrack');
+const scrollThumb = document.getElementById('scrollThumb');
 
-function syncScrollbarWidth(){
-  const inner = document.querySelector('.table-inner');
-  bottomScrollbarInner.style.width = inner.scrollWidth + 'px';
+function updateThumb(){
+  const trackWidth = scrollTrack.clientWidth;
+  const contentWidth = tableWrap.scrollWidth;
+  const visibleWidth = tableWrap.clientWidth;
+  if(contentWidth <= visibleWidth + 1){
+    scrollThumb.style.display = 'none';
+    return;
+  }
+  scrollThumb.style.display = 'block';
+  const thumbWidth = Math.max(40, trackWidth * (visibleWidth / contentWidth));
+  const maxThumbX = trackWidth - thumbWidth;
+  const scrollRatio = tableWrap.scrollLeft / (contentWidth - visibleWidth);
+  scrollThumb.style.width = thumbWidth + 'px';
+  scrollThumb.style.left = (scrollRatio * maxThumbX) + 'px';
 }
-let syncingScroll = false;
-tableWrap.addEventListener('scroll', ()=>{
-  if(syncingScroll) return;
-  syncingScroll = true;
-  bottomScrollbar.scrollLeft = tableWrap.scrollLeft;
-  syncingScroll = false;
+
+function scrollToThumbLeft(newLeft){
+  const trackWidth = scrollTrack.clientWidth;
+  const thumbWidth = scrollThumb.offsetWidth;
+  const maxThumbX = trackWidth - thumbWidth;
+  newLeft = Math.max(0, Math.min(maxThumbX, newLeft));
+  scrollThumb.style.left = newLeft + 'px';
+  const scrollRatio = maxThumbX > 0 ? newLeft / maxThumbX : 0;
+  tableWrap.scrollLeft = scrollRatio * (tableWrap.scrollWidth - tableWrap.clientWidth);
+}
+
+tableWrap.addEventListener('scroll', updateThumb);
+window.addEventListener('resize', updateThumb);
+
+let dragging = false, dragStartX = 0, dragStartLeft = 0;
+scrollThumb.addEventListener('mousedown', (e)=>{
+  dragging = true;
+  dragStartX = e.clientX;
+  dragStartLeft = parseFloat(scrollThumb.style.left) || 0;
+  scrollThumb.classList.add('dragging');
+  e.preventDefault();
 });
-bottomScrollbar.addEventListener('scroll', ()=>{
-  if(syncingScroll) return;
-  syncingScroll = true;
-  tableWrap.scrollLeft = bottomScrollbar.scrollLeft;
-  syncingScroll = false;
+window.addEventListener('mousemove', (e)=>{
+  if(!dragging) return;
+  scrollToThumbLeft(dragStartLeft + (e.clientX - dragStartX));
 });
-window.addEventListener('resize', syncScrollbarWidth);
-syncScrollbarWidth();
+window.addEventListener('mouseup', ()=>{
+  if(!dragging) return;
+  dragging = false;
+  scrollThumb.classList.remove('dragging');
+});
+
+// Tocar/clickear directamente sobre el track (fuera del thumb) salta el scroll ahí.
+scrollTrack.addEventListener('mousedown', (e)=>{
+  if(e.target === scrollThumb) return;
+  const rect = scrollTrack.getBoundingClientRect();
+  const clickX = e.clientX - rect.left;
+  scrollToThumbLeft(clickX - scrollThumb.offsetWidth / 2);
+});
+
+// Soporte táctil básico (arrastrar el thumb con el dedo).
+scrollThumb.addEventListener('touchstart', (e)=>{
+  dragging = true;
+  dragStartX = e.touches[0].clientX;
+  dragStartLeft = parseFloat(scrollThumb.style.left) || 0;
+  scrollThumb.classList.add('dragging');
+}, { passive:true });
+window.addEventListener('touchmove', (e)=>{
+  if(!dragging) return;
+  scrollToThumbLeft(dragStartLeft + (e.touches[0].clientX - dragStartX));
+}, { passive:true });
+window.addEventListener('touchend', ()=>{
+  dragging = false;
+  scrollThumb.classList.remove('dragging');
+});
+
+updateThumb();
+requestAnimationFrame(updateThumb);
+
+// ============ BARRA VERTICAL (misma lógica, en el otro eje) ============
+const scrollTrackV = document.getElementById('scrollTrackV');
+const scrollThumbV = document.getElementById('scrollThumbV');
+
+function scrollHeightTotal(){
+  return document.documentElement.scrollHeight;
+}
+function viewportHeight(){
+  return window.innerHeight;
+}
+function scrollTopNow(){
+  return window.scrollY || document.documentElement.scrollTop;
+}
+
+function updateThumbV(){
+  const trackHeight = scrollTrackV.clientHeight;
+  const contentHeight = scrollHeightTotal();
+  const visibleHeight = viewportHeight();
+  if(contentHeight <= visibleHeight + 1){
+    scrollThumbV.style.display = 'none';
+    return;
+  }
+  scrollThumbV.style.display = 'block';
+  const thumbHeight = Math.max(40, trackHeight * (visibleHeight / contentHeight));
+  const maxThumbY = trackHeight - thumbHeight;
+  const scrollRatio = scrollTopNow() / (contentHeight - visibleHeight);
+  scrollThumbV.style.height = thumbHeight + 'px';
+  scrollThumbV.style.top = (scrollRatio * maxThumbY) + 'px';
+}
+
+function scrollToThumbTop(newTop){
+  const trackHeight = scrollTrackV.clientHeight;
+  const thumbHeight = scrollThumbV.offsetHeight;
+  const maxThumbY = trackHeight - thumbHeight;
+  newTop = Math.max(0, Math.min(maxThumbY, newTop));
+  scrollThumbV.style.top = newTop + 'px';
+  const scrollRatio = maxThumbY > 0 ? newTop / maxThumbY : 0;
+  window.scrollTo(window.scrollX, scrollRatio * (scrollHeightTotal() - viewportHeight()));
+}
+
+window.addEventListener('scroll', updateThumbV);
+window.addEventListener('resize', updateThumbV);
+
+let draggingV = false, dragStartY = 0, dragStartTop = 0;
+scrollThumbV.addEventListener('mousedown', (e)=>{
+  draggingV = true;
+  dragStartY = e.clientY;
+  dragStartTop = parseFloat(scrollThumbV.style.top) || 0;
+  scrollThumbV.classList.add('dragging');
+  e.preventDefault();
+});
+window.addEventListener('mousemove', (e)=>{
+  if(!draggingV) return;
+  scrollToThumbTop(dragStartTop + (e.clientY - dragStartY));
+});
+window.addEventListener('mouseup', ()=>{
+  if(!draggingV) return;
+  draggingV = false;
+  scrollThumbV.classList.remove('dragging');
+});
+
+scrollTrackV.addEventListener('mousedown', (e)=>{
+  if(e.target === scrollThumbV) return;
+  const rect = scrollTrackV.getBoundingClientRect();
+  const clickY = e.clientY - rect.top;
+  scrollToThumbTop(clickY - scrollThumbV.offsetHeight / 2);
+});
+
+scrollThumbV.addEventListener('touchstart', (e)=>{
+  draggingV = true;
+  dragStartY = e.touches[0].clientY;
+  dragStartTop = parseFloat(scrollThumbV.style.top) || 0;
+  scrollThumbV.classList.add('dragging');
+}, { passive:true });
+window.addEventListener('touchmove', (e)=>{
+  if(!draggingV) return;
+  scrollToThumbTop(dragStartTop + (e.touches[0].clientY - dragStartY));
+}, { passive:true });
+window.addEventListener('touchend', ()=>{
+  draggingV = false;
+  scrollThumbV.classList.remove('dragging');
+});
+
+updateThumbV();
+requestAnimationFrame(updateThumbV);
 </script>
 </body>
 </html>
