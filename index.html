@@ -4,6 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sistemas electorales provinciales — Argentina</title>
+<meta name="description" content="Mapa interactivo de las 24 jurisdicciones argentinas: tipo de boleta, sistema legislativo, primarias, alianzas presidenciales, IDH, PBG y más. Modo de comparación y línea de tiempo de Argentina (electoral y económica).">
+
+<!-- Open Graph / redes sociales -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="Mapa Electoral Argentino">
+<meta property="og:description" content="24 provincias, 15 variables: tipo de boleta, sistema legislativo, alianzas presidenciales, IDH, PBG y más. Compará dos mapas o recorré la línea de tiempo de Argentina.">
+<meta property="og:image" content="og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://gsagarraga.github.io/">
+<meta property="og:locale" content="es_AR">
+
+<!-- Twitter/X card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Mapa Electoral Argentino">
+<meta name="twitter:description" content="24 provincias, 15 variables: tipo de boleta, sistema legislativo, alianzas presidenciales, IDH, PBG y más.">
+<meta name="twitter:image" content="og-image.png">
+
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238fb2f7'/%3E%3Cstop offset='1' stop-color='%233f6fd6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M14 24h36l-3.4 27.4A4 4 0 0 1 42.6 55H21.4a4 4 0 0 1-4-3.6L14 24z' fill='url(%23g)'/%3E%3Crect x='11' y='16' width='42' height='10' rx='3' fill='url(%23g)'/%3E%3Crect x='27' y='18.7' width='10' height='4.6' rx='1.4' fill='%230a0a0a'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700;800&family=Rubik+Mono+One&display=swap" rel="stylesheet">
@@ -292,21 +310,32 @@
   .compare-btn-close:hover{ background:#2a1616; border-color:#6b3838; color:#ffc2c2; }
 
   /* ---------- COMPARE MODE APP ---------- */
-  .compare-app{ display:none; min-height:100vh; flex-direction:column; }
+  .compare-app{ display:none; height:100vh; flex-direction:column; overflow-y:auto; }
   body.mode-compare .app{ display:none; }
   body.mode-compare .compare-app{ display:flex; }
 
   /* ---------- TIMELINE MODE APP ---------- */
-  .timeline-app{ display:none; min-height:100vh; flex-direction:column; }
+  .timeline-app{ display:none; height:100vh; flex-direction:column; overflow-y:auto; }
   body.mode-timeline .app{ display:none; }
   body.mode-timeline .timeline-app{ display:flex; }
 
   .timeline-body{
     flex:1; display:flex; flex-direction:column; min-height:0;
-    padding: 28px 40px 24px;
+    padding: 18px 40px 16px;
   }
+  .timeline-dataset-toggle{
+    display:flex; gap:6px; margin-bottom:10px; flex:none;
+  }
+  .dataset-btn{
+    padding:7px 14px; border-radius:100px; border:1px solid var(--line);
+    background:#0d0d0d; color:var(--muted); font-size:12.5px; font-weight:600;
+    cursor:pointer; transition: all .15s ease;
+  }
+  .dataset-btn:hover{ border-color:var(--muted-2); color:var(--text); }
+  .dataset-btn.active{ background: var(--blue-gradient); border-color:transparent; color:#fff; }
+
   .timeline-legend{
-    display:flex; flex-wrap:wrap; align-content:flex-start; gap:8px; margin-bottom:14px; height:44px; overflow-y:auto;
+    display:flex; flex-wrap:wrap; align-content:flex-start; gap:8px; margin-bottom:12px; height:50px; overflow-y:auto;
   }
   .timeline-mapcanvas{
     flex:1; min-height:0; position:relative;
@@ -314,31 +343,31 @@
   }
   .timeline-mapcanvas svg{ width:100%; height:100%; max-height:58vh; }
 
-  .timeline-controls{ display:flex; align-items:center; gap:22px; margin-top:16px; }
+  .timeline-controls{ display:flex; align-items:center; gap:18px; margin-top:12px; flex:none; }
   .timeline-play{
-    flex:none; width:50px; height:50px; border-radius:50%; border:none; cursor:pointer;
+    flex:none; width:42px; height:42px; border-radius:50%; border:none; cursor:pointer;
     background: var(--blue-gradient); color:#fff;
     display:flex; align-items:center; justify-content:center;
     transition: transform .15s ease;
   }
   .timeline-play:hover{ transform: scale(1.06); }
   .timeline-play svg{ margin-left:2px; }
-  .timeline-steps{ flex:1; display:flex; justify-content:space-between; position:relative; }
-  .timeline-steps::before{
-    content:''; position:absolute; left:12px; right:12px; top:9px; height:2px; background: var(--line); z-index:0;
+  .timeline-steps{
+    flex:1; display:flex; gap:16px; position:relative;
+    overflow-x:auto; padding:0 6px; scrollbar-width:thin;
   }
   .timeline-step{
-    position:relative; z-index:1; flex:1;
+    position:relative; z-index:1; flex:none;
     display:flex; flex-direction:column; align-items:center; gap:9px;
     background:transparent; border:none; cursor:pointer; padding:0;
   }
   .timeline-step .dot{
-    width:18px; height:18px; border-radius:50%; background:#0d0d0d;
+    width:14px; height:14px; border-radius:50%; background:#0d0d0d;
     border:2px solid var(--line); transition: all .2s ease;
   }
   .timeline-step .label{
-    font-size:11px; font-family:'Rubik Mono One', monospace; color: var(--muted-2);
-    transition: color .2s ease;
+    font-size:10.5px; font-family:'Rubik Mono One', monospace; color: var(--muted-2);
+    white-space:nowrap; transition: color .2s ease;
   }
   .timeline-step.active .dot{ background: var(--partidaria); border-color: var(--partidaria); transform: scale(1.2); }
   .timeline-step.active .label{ color: var(--text); }
@@ -430,6 +459,13 @@
     margin: 6px 0 0; font-size:10.5px; line-height:1.4; color: var(--muted-2);
     font-family:'Rubik', sans-serif;
   }
+  /* En la línea de tiempo el área de leyenda es ancha (no una columna angosta
+     como en el modo comparación), así que el min/barra/max va en una fila. */
+  .timeline-legend .compare-gradient-legend{
+    flex-direction:row; align-items:center; gap:10px;
+  }
+  .timeline-legend .grad-bar{ width:auto; flex:1; }
+  .timeline-legend .grad-caption{ margin-top:4px; }
   .value-label{
     font-family:'Rubik', sans-serif; font-weight:700; font-size:22px;
     text-anchor:middle; dominant-baseline:central;
@@ -607,7 +643,7 @@
       </span>
       <span class="compare-cta-text">
         <span class="compare-cta-title">Modo de comparación</span>
-        <span class="compare-cta-sub">Visualizá dos mapas lado a lado: tipo de boleta, legislatura, primarias, partido gobernante, alianza presidencial o línea de tiempo electoral.</span>
+        <span class="compare-cta-sub">Visualizá dos mapas lado a lado: tipo de boleta, legislatura, primarias, partido gobernante, alianza presidencial o línea de tiempo de Argentina.</span>
       </span>
     </button>
 
@@ -710,7 +746,7 @@
     <div class="compare-topbar-actions">
       <button class="compare-btn compare-btn-ghost" id="timelineToggle" type="button">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>
-        Línea de tiempo electoral
+        Línea de tiempo de Argentina
       </button>
       <button class="compare-btn compare-btn-ghost" id="compareShare" type="button">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 10.5l6.8-3.9M8.6 13.5l6.8 3.9"/></svg>
@@ -760,7 +796,7 @@
 <!-- ============ TIMELINE MODE ============ -->
 <div class="timeline-app" id="timelineApp">
   <div class="compare-topbar">
-    <p class="compare-topbar-title">Línea de tiempo electoral <span>· Alianza ganadora, elección por elección (2015-2023)</span></p>
+    <p class="compare-topbar-title" id="timelineTitle">Línea de tiempo de Argentina <span>· Alianza ganadora, elección por elección (2015-2023)</span></p>
     <div class="compare-topbar-actions">
       <button class="compare-btn compare-btn-close" id="timelineExit" type="button">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -770,11 +806,15 @@
   </div>
 
   <div class="timeline-body">
+    <div class="timeline-dataset-toggle" id="timelineDatasetToggle">
+      <button class="dataset-btn active" type="button">Alianza presidencial ganadora</button>
+      <button class="dataset-btn" type="button">PBG per cápita (1895-2022)</button>
+    </div>
     <div class="timeline-legend" id="timelineLegend"></div>
     <div class="timeline-mapcanvas">
       <svg id="mapsvgT" viewBox="-10 -644 816 1885" xmlns="http://www.w3.org/2000/svg"></svg>
     </div>
-    <p class="compare-credit">Tocá una provincia para ver su ficha completa. Pausá en cualquier momento para inspeccionar un año en detalle.</p>
+    <p class="compare-credit">Tocá una provincia para ver su ficha completa. Pausá en cualquier momento para inspeccionar un paso en detalle.</p>
 
     <div class="timeline-controls">
       <button class="timeline-play" id="timelinePlay" type="button" aria-label="Reproducir">
@@ -1244,6 +1284,37 @@ const PBG_RELATIVO = {
   santafe: 100.8, santiago: 83.8, tierradelfuego: 246.0, tucuman: 52.3
 };
 
+// Serie histórica completa del PBG per cápita relativo a la media nacional
+// (media nacional = 100), 1895-2022. Fuente: CEPAL y Ministerio de Economía de
+// la Nación, "Desagregación provincial del valor agregado bruto de la Argentina,
+// base 2004", dataset publicado por Fundar/Argendata.
+const PBG_ANIOS = ["1895", "1914", "1937", "1946", "1953", "1965", "1975", "1986", "1993", "2004", "2005", "2006", "2007", "2008", "2009", "2010", "2011", "2012", "2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022"];
+const PBG_HISTORICO = {
+  buenosaires: { "1895":102.7, "1914":107.9, "1937":98.5, "1946":101.3, "1953":102.1, "1965":102.8, "1975":81.9, "1986":98.5, "1993":86.9, "2004":83.6, "2005":83.6, "2006":83.2, "2007":82.5, "2008":83.2, "2009":82.6, "2010":84.0, "2011":84.6, "2012":85.4, "2013":85.1, "2014":83.6, "2015":83.9, "2016":84.0, "2017":83.9, "2018":83.5, "2019":82.7, "2020":83.4, "2021":83.9, "2022":84.1 },
+  caba: { "1895":133.6, "1914":130.8, "1937":166.4, "1946":181.1, "1953":179.4, "1965":183.9, "1975":241.2, "1986":245.9, "1993":273.4, "2004":265.1, "2005":267.2, "2006":272.6, "2007":280.8, "2008":285.7, "2009":297.6, "2010":289.3, "2011":290.8, "2012":293.5, "2013":290.1, "2014":292.1, "2015":291.2, "2016":298.0, "2017":299.7, "2018":306.0, "2019":298.9, "2020":294.6, "2021":293.5, "2022":296.0 },
+  catamarca: { "1895":44.0, "1914":50.2, "1937":31.2, "1946":41.2, "1953":39.7, "1965":37.9, "1975":59.5, "1986":55.4, "1993":70.1, "2004":102.7, "2005":105.8, "2006":103.3, "2007":98.5, "2008":91.1, "2009":88.0, "2010":81.7, "2011":77.1, "2012":80.0, "2013":74.9, "2014":78.7, "2015":69.4, "2016":71.0, "2017":68.3, "2018":67.0, "2019":61.7, "2020":61.7, "2021":64.6, "2022":68.6 },
+  chaco: { "1895":115.0, "1914":82.2, "1937":74.5, "1946":58.2, "1953":68.5, "1965":66.2, "1975":48.3, "1986":36.7, "1993":50.7, "2004":51.0, "2005":52.2, "2006":53.3, "2007":53.8, "2008":54.8, "2009":55.4, "2010":56.8, "2011":59.5, "2012":55.0, "2013":56.5, "2014":62.1, "2015":59.8, "2016":60.4, "2017":61.2, "2018":62.0, "2019":59.6, "2020":62.2, "2021":60.2, "2022":61.4 },
+  chubut: { "1895":76.7, "1914":103.3, "1937":252.0, "1946":189.7, "1953":154.3, "1965":120.7, "1975":173.5, "1986":164.3, "1993":122.9, "2004":196.0, "2005":185.4, "2006":188.1, "2007":175.5, "2008":169.2, "2009":168.1, "2010":161.7, "2011":158.1, "2012":153.3, "2013":153.4, "2014":159.0, "2015":154.9, "2016":151.2, "2017":150.3, "2018":152.6, "2019":156.0, "2020":154.1, "2021":144.4, "2022":138.5 },
+  corrientes: { "1895":59.7, "1914":59.8, "1937":48.3, "1946":49.8, "1953":45.9, "1965":49.0, "1975":54.3, "1986":44.7, "1993":53.9, "2004":46.0, "2005":47.9, "2006":46.9, "2007":46.4, "2008":46.7, "2009":48.1, "2010":46.2, "2011":48.2, "2012":49.2, "2013":49.4, "2014":50.6, "2015":50.6, "2016":50.8, "2017":51.9, "2018":54.0, "2019":53.0, "2020":53.8, "2021":53.1, "2022":51.5 },
+  cordoba: { "1895":78.4, "1914":92.8, "1937":94.4, "1946":69.8, "1953":72.1, "1965":88.9, "1975":75.5, "1986":83.7, "1993":93.6, "2004":93.5, "2005":99.8, "2006":98.8, "2007":103.9, "2008":102.8, "2009":99.3, "2010":102.1, "2011":101.2, "2012":98.0, "2013":103.0, "2014":103.5, "2015":104.7, "2016":105.4, "2017":104.9, "2018":100.6, "2019":104.7, "2020":103.2, "2021":104.8, "2022":102.5 },
+  entrerios: { "1895":94.8, "1914":82.4, "1937":64.1, "1946":58.6, "1953":66.6, "1965":61.9, "1975":72.3, "1986":54.6, "1993":72.0, "2004":80.8, "2005":83.2, "2006":82.6, "2007":84.7, "2008":83.9, "2009":82.4, "2010":86.3, "2011":85.8, "2012":86.7, "2013":87.8, "2014":88.2, "2015":89.0, "2016":86.8, "2017":88.9, "2018":87.8, "2019":90.7, "2020":94.0, "2021":90.7, "2022":91.0 },
+  formosa: { "1895":132.3, "1914":97.2, "1937":95.4, "1946":68.4, "1953":63.8, "1965":40.0, "1975":56.5, "1986":28.3, "1993":51.3, "2004":41.3, "2005":42.6, "2006":42.2, "2007":42.2, "2008":40.4, "2009":42.7, "2010":40.7, "2011":42.1, "2012":42.8, "2013":43.0, "2014":43.3, "2015":44.7, "2016":45.6, "2017":45.7, "2018":46.8, "2019":44.8, "2020":46.5, "2021":47.3, "2022":47.9 },
+  jujuy: { "1895":64.7, "1914":93.8, "1937":64.4, "1946":69.6, "1953":78.2, "1965":54.3, "1975":79.7, "1986":48.0, "1993":57.8, "2004":53.2, "2005":51.3, "2006":50.7, "2007":50.7, "2008":51.1, "2009":53.5, "2010":53.6, "2011":53.4, "2012":55.4, "2013":54.3, "2014":55.7, "2015":56.7, "2016":55.8, "2017":56.0, "2018":56.8, "2019":58.4, "2020":58.9, "2021":60.1, "2022":63.4 },
+  lapampa: { "1895":101.4, "1914":123.6, "1937":116.4, "1946":100.4, "1953":107.6, "1965":134.5, "1975":85.5, "1986":141.1, "1993":112.0, "2004":113.7, "2005":125.7, "2006":117.4, "2007":122.1, "2008":127.4, "2009":125.5, "2010":122.2, "2011":124.2, "2012":126.2, "2013":124.9, "2014":121.4, "2015":124.8, "2016":132.3, "2017":125.4, "2018":126.9, "2019":132.2, "2020":132.0, "2021":129.2, "2022":134.6 },
+  larioja: { "1895":48.0, "1914":77.4, "1937":36.4, "1946":44.9, "1953":44.0, "1965":36.4, "1975":68.5, "1986":85.1, "1993":79.3, "2004":75.6, "2005":74.2, "2006":71.9, "2007":72.6, "2008":68.5, "2009":69.6, "2010":69.5, "2011":69.3, "2012":67.5, "2013":68.9, "2014":67.5, "2015":67.0, "2016":67.3, "2017":67.5, "2018":66.7, "2019":65.8, "2020":64.3, "2021":64.1, "2022":66.1 },
+  mendoza: { "1895":120.0, "1914":84.2, "1937":67.3, "1946":99.7, "1953":100.5, "1965":93.7, "1975":106.2, "1986":62.1, "1993":91.0, "2004":91.3, "2005":86.5, "2006":88.2, "2007":86.8, "2008":86.7, "2009":86.6, "2010":82.2, "2011":82.3, "2012":84.0, "2013":82.7, "2014":82.0, "2015":82.6, "2016":80.4, "2017":79.2, "2018":81.3, "2019":81.5, "2020":78.5, "2021":75.6, "2022":74.1 },
+  misiones: { "1895":79.8, "1914":46.3, "1937":52.6, "1946":63.0, "1953":51.4, "1965":45.4, "1975":78.5, "1986":61.9, "1993":57.5, "2004":49.4, "2005":48.0, "2006":46.8, "2007":45.2, "2008":42.9, "2009":43.0, "2010":42.1, "2011":42.4, "2012":43.4, "2013":44.3, "2014":45.4, "2015":45.4, "2016":45.2, "2017":45.1, "2018":45.6, "2019":45.1, "2020":47.9, "2021":48.5, "2022":47.9 },
+  neuquen: { "1895":39.8, "1914":74.4, "1937":77.3, "1946":75.3, "1953":66.5, "1965":64.4, "1975":145.7, "1986":99.3, "1993":147.3, "2004":242.1, "2005":217.0, "2006":206.8, "2007":194.5, "2008":187.0, "2009":187.3, "2010":169.5, "2011":159.9, "2012":154.9, "2013":150.6, "2014":158.1, "2015":161.4, "2016":161.4, "2017":155.7, "2018":169.1, "2019":187.0, "2020":191.3, "2021":208.7, "2022":236.1 },
+  rionegro: { "1895":81.5, "1914":99.1, "1937":83.1, "1946":94.0, "1953":109.3, "1965":95.9, "1975":110.0, "1986":107.1, "1993":97.7, "2004":91.0, "2005":91.0, "2006":92.4, "2007":89.4, "2008":87.5, "2009":89.7, "2010":86.1, "2011":87.4, "2012":90.0, "2013":90.6, "2014":90.0, "2015":90.0, "2016":89.1, "2017":87.6, "2018":90.2, "2019":89.9, "2020":90.0, "2021":86.5, "2022":85.4 },
+  salta: { "1895":60.4, "1914":64.5, "1937":61.7, "1946":59.0, "1953":59.3, "1965":59.6, "1975":60.3, "1986":60.1, "1993":54.6, "2004":59.6, "2005":58.4, "2006":59.3, "2007":58.7, "2008":58.7, "2009":59.3, "2010":58.0, "2011":57.8, "2012":55.4, "2013":51.8, "2014":55.4, "2015":58.0, "2016":57.1, "2017":57.6, "2018":58.4, "2019":59.7, "2020":61.0, "2021":59.5, "2022":59.2 },
+  sanjuan: { "1895":126.5, "1914":68.0, "1937":48.6, "1946":84.5, "1953":70.9, "1965":73.0, "1975":62.6, "1986":60.8, "1993":70.2, "2004":68.6, "2005":68.8, "2006":71.4, "2007":70.4, "2008":72.4, "2009":77.5, "2010":82.0, "2011":81.8, "2012":83.7, "2013":83.9, "2014":81.3, "2015":76.4, "2016":74.4, "2017":74.1, "2018":75.0, "2019":73.8, "2020":73.6, "2021":74.0, "2022":75.4 },
+  sanluis: { "1895":47.4, "1914":93.5, "1937":49.0, "1946":46.4, "1953":54.0, "1965":65.5, "1975":59.0, "1986":133.6, "1993":114.3, "2004":105.6, "2005":102.1, "2006":97.3, "2007":95.3, "2008":94.3, "2009":94.1, "2010":90.8, "2011":91.2, "2012":90.9, "2013":94.9, "2014":94.2, "2015":96.6, "2016":95.4, "2017":94.0, "2018":91.0, "2019":90.0, "2020":86.8, "2021":92.2, "2022":91.4 },
+  santacruz: { "1895":197.0, "1914":217.9, "1937":181.3, "1946":172.0, "1953":185.0, "1965":304.8, "1975":177.8, "1986":173.1, "1993":201.3, "2004":312.3, "2005":284.4, "2006":280.0, "2007":252.6, "2008":237.3, "2009":250.6, "2010":226.9, "2011":210.4, "2012":224.2, "2013":217.6, "2014":220.4, "2015":230.4, "2016":214.1, "2017":200.6, "2018":200.1, "2019":195.9, "2020":185.8, "2021":176.1, "2022":170.9 },
+  santafe: { "1895":134.3, "1914":107.4, "1937":103.6, "1946":86.0, "1953":86.8, "1965":95.7, "1975":91.4, "1986":91.2, "1993":88.8, "2004":103.2, "2005":105.0, "2006":103.0, "2007":102.6, "2008":102.2, "2009":97.5, "2010":103.0, "2011":100.8, "2012":98.9, "2013":101.3, "2014":99.9, "2015":99.4, "2016":96.4, "2017":99.7, "2018":98.1, "2019":101.0, "2020":102.1, "2021":104.1, "2022":100.8 },
+  santiago: { "1895":45.1, "1914":46.3, "1937":35.1, "1946":37.9, "1953":43.1, "1965":33.0, "1975":51.5, "1986":30.9, "1993":46.5, "2004":57.8, "2005":53.3, "2006":61.1, "2007":63.3, "2008":63.5, "2009":57.7, "2010":69.1, "2011":69.5, "2012":64.9, "2013":71.3, "2014":84.1, "2015":80.6, "2016":84.7, "2017":87.5, "2018":79.2, "2019":84.6, "2020":84.9, "2021":82.6, "2022":83.8 },
+  tierradelfuego: { "1895":167.5, "1914":191.5, "1937":253.5, "1946":254.7, "1953":244.4, "1965":198.7, "1975":252.8, "1986":492.6, "1993":297.7, "2004":280.2, "2005":274.1, "2006":282.7, "2007":266.8, "2008":251.9, "2009":236.3, "2010":264.9, "2011":305.7, "2012":327.9, "2013":315.4, "2014":280.8, "2015":277.9, "2016":266.3, "2017":257.0, "2018":257.5, "2019":233.3, "2020":237.7, "2021":243.1, "2022":246.0 },
+  tucuman: { "1895":124.9, "1914":73.5, "1937":62.2, "1946":59.9, "1953":67.8, "1965":42.6, "1975":89.5, "1986":52.3, "1993":58.2, "2004":49.4, "2005":49.9, "2006":51.4, "2007":51.1, "2008":51.9, "2009":52.7, "2010":51.0, "2011":52.3, "2012":52.5, "2013":51.0, "2014":50.7, "2015":50.6, "2016":52.5, "2017":52.7, "2018":54.6, "2019":55.9, "2020":55.7, "2021":55.1, "2022":52.3 },
+};
 // Región geográfica/histórica de cada provincia (clasificación estándar).
 const REGION_PROVINCIAL = {
   jujuy: "noa", salta: "noa", catamarca: "noa", santiago: "noa", tucuman: "noa",
@@ -1877,10 +1948,11 @@ document.getElementById('compareShare').addEventListener('click', ()=>{
 });
 
 // ============ LÍNEA DE TIEMPO ============
-// Recorre las 5 elecciones presidenciales relevadas (2015-2023) sobre un único
-// mapa. Se puede reproducir automáticamente o, si se pausa (o se toca un año
-// puntual del selector inferior), queda fijo en ese año para poder inspeccionarlo
-// con el mismo detalle que en cualquier otro modo (tooltip, click a la ficha).
+// Dos series disponibles: la electoral (5 elecciones presidenciales, categórica)
+// y la económica (PBG per cápita relativo, 1895-2022, cuantitativa). Se puede
+// reproducir automáticamente o, si se pausa (o se toca un paso puntual del
+// selector inferior), queda fijo ahí para poder inspeccionarlo con el mismo
+// detalle que en cualquier otro modo (tooltip, click a la ficha).
 const TIMELINE_STEPS = [
   { varId: "alianza_2015_1", label: "2015", sub: "1ra vta" },
   { varId: "alianza_2015_2", label: "2015", sub: "2da vta" },
@@ -1888,44 +1960,42 @@ const TIMELINE_STEPS = [
   { varId: "alianza_2023_1", label: "2023", sub: "1ra vta" },
   { varId: "alianza_2023_2", label: "2023", sub: "2da vta" }
 ];
+const TIMELINE_DATASETS = [
+  {
+    id: "electoral",
+    label: "Alianza presidencial ganadora",
+    type: "categorical",
+    title: "Línea de tiempo de Argentina",
+    subtitle: "Alianza ganadora, elección por elección (2015-2023)",
+    steps: TIMELINE_STEPS
+  },
+  {
+    id: "economico",
+    label: "PBG per cápita relativo",
+    type: "quantitative",
+    title: "Argentina en el tiempo",
+    subtitle: "PBG per cápita relativo a la media nacional, 1895-2022",
+    unit: "índice (media nacional = 100)",
+    source: "CEPAL y Ministerio de Economía de la Nación, vía Fundar/Argendata",
+    format: v => (v/100).toFixed(2).replace(".", ",")+"×",
+    steps: PBG_ANIOS.map(y => ({ year: y, label: y }))
+  }
+];
 let timelineBuilt = false;
+let timelineDatasetIdx = 0;
 let timelineStep = 0;
 let timelineTimer = null;
 let timelineRenderer = null;
+let timelineBuildStepper = null;
 
 function buildTimeline(){
   const svgEl = document.getElementById('mapsvgT');
   const legendEl = document.getElementById('timelineLegend');
   const stepsEl = document.getElementById('timelineSteps');
-
-  TIMELINE_STEPS.forEach((step, i)=>{
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className = 'timeline-step';
-    btn.innerHTML = '<span class="dot"></span><span class="label">'+step.label+'<br>'+step.sub+'</span>';
-    btn.addEventListener('click', ()=>{
-      stopTimelinePlayback();
-      timelineStep = i;
-      renderTimelineStep();
-    });
-    stepsEl.appendChild(btn);
-  });
-
-  function renderLegend(varDef){
-    legendEl.innerHTML = '';
-    Object.keys(varDef.categories).forEach(catKey=>{
-      const n = PROVINCES.filter(p=>valueOf(varDef,p)===catKey).length;
-      const chip = document.createElement('div');
-      chip.className = 'compare-chip';
-      chip.innerHTML = '<span class="chip-dot" style="background:var(--'+catKey+')"></span>'
-        + '<span class="chip-label">'+varDef.categories[catKey]+'</span>'
-        + '<span class="chip-count">'+n+'</span>';
-      legendEl.appendChild(chip);
-    });
-  }
+  const toggleEl = document.getElementById('timelineDatasetToggle');
 
   // El mapa se arma UNA sola vez (los mismos elementos persisten entre pasos);
-  // al cambiar de año solo se actualiza la clase/color de cada provincia, nunca
+  // al cambiar de paso solo se actualiza la clase/color de cada provincia, nunca
   // se recrean los nodos. Así el mapa queda siempre en el mismo lugar y el
   // cambio de color puede animarse suavemente (ver transition en .province).
   const elements = {};
@@ -1938,7 +2008,6 @@ function buildTimeline(){
       el.setAttribute('d', d);
       el.dataset.id = p.id;
       el.addEventListener('click', ()=>openPanel(p));
-      el.addEventListener('mousemove', e=>showTooltip(e,p.name));
       el.addEventListener('mouseleave', hideTooltip);
       svgEl.appendChild(el);
       elements[p.id] = el;
@@ -1950,7 +2019,6 @@ function buildTimeline(){
       el.setAttribute('d', dMalvinas);
       el.dataset.id = 'malvinas';
       el.addEventListener('click', ()=>openPanel(tdf));
-      el.addEventListener('mousemove', e=>showTooltip(e,'Islas Malvinas (Tierra del Fuego)'));
       el.addEventListener('mouseleave', hideTooltip);
       svgEl.appendChild(el);
       elements['malvinas'] = el;
@@ -1964,42 +2032,153 @@ function buildTimeline(){
     dot.setAttribute('class','caba-dot');
     g.appendChild(dot);
     g.addEventListener('click', ()=>openPanel(caba));
-    g.addEventListener('mousemove', e=>showTooltip(e,'CABA'));
     g.addEventListener('mouseleave', hideTooltip);
     svgEl.appendChild(g);
     elements['caba'] = g;
     elements['caba_dot'] = dot;
   }
 
-  function updateColors(varDef){
+  function renderLegendCategorical(varDef){
+    legendEl.innerHTML = '';
+    Object.keys(varDef.categories).forEach(catKey=>{
+      const n = PROVINCES.filter(p=>valueOf(varDef,p)===catKey).length;
+      const chip = document.createElement('div');
+      chip.className = 'compare-chip';
+      chip.innerHTML = '<span class="chip-dot" style="background:var(--'+catKey+')"></span>'
+        + '<span class="chip-label">'+varDef.categories[catKey]+'</span>'
+        + '<span class="chip-count">'+n+'</span>';
+      legendEl.appendChild(chip);
+    });
+  }
+
+  function renderLegendQuantitative(dataset, year){
+    legendEl.innerHTML = '';
+    const vals = PROVINCES.map(p=>PBG_HISTORICO[p.id][year]);
+    const min = Math.min(...vals), max = Math.max(...vals);
+    const wrap = document.createElement('div');
+    wrap.className = 'compare-gradient-wrap';
+    const bar = document.createElement('div');
+    bar.className = 'compare-gradient-legend';
+    bar.innerHTML = '<span class="grad-min">'+dataset.format(min)+'</span>'
+      + '<span class="grad-bar" style="background:linear-gradient(90deg, '
+        + colorFromT(0).color + ', ' + colorFromT(1).color + ')"></span>'
+      + '<span class="grad-max">'+dataset.format(max)+'</span>';
+    wrap.appendChild(bar);
+    const caption = document.createElement('p');
+    caption.className = 'grad-caption';
+    caption.textContent = 'Fuente: '+dataset.source+' · escala logarítmica';
+    wrap.appendChild(caption);
+    legendEl.appendChild(wrap);
+  }
+
+  function updateColorsCategorical(varDef){
     PROVINCES.filter(p=>p.id!=='caba').forEach(p=>{
       const catVal = valueOf(varDef,p);
       const el = elements[p.id];
-      if(el){ el.setAttribute('class','province '+catVal); el.dataset.cat = catVal; }
+      if(el){
+        el.setAttribute('class','province '+catVal);
+        el.style.fill = '';
+        el.dataset.cat = catVal;
+        el.onmousemove = (e)=>showTooltip(e,p.name);
+      }
     });
     const tdf = PROVINCES.find(p=>p.id==='tierradelfuego');
     const catValTdf = valueOf(varDef, tdf);
     if(elements['malvinas']){
       elements['malvinas'].setAttribute('class','province '+catValTdf);
+      elements['malvinas'].style.fill = '';
       elements['malvinas'].dataset.cat = catValTdf;
+      elements['malvinas'].onmousemove = (e)=>showTooltip(e,'Islas Malvinas (Tierra del Fuego)');
     }
     const caba = PROVINCES.find(p=>p.id==='caba');
     const catValCaba = valueOf(varDef, caba);
     elements['caba'].dataset.cat = catValCaba;
     elements['caba_dot'].style.fill = 'var(--'+catValCaba+')';
+    elements['caba'].onmousemove = (e)=>showTooltip(e,'CABA');
   }
 
-  buildMapOnce();
+  function updateColorsQuantitative(dataset, year){
+    const allVals = PROVINCES.map(p=>PBG_HISTORICO[p.id][year]);
+    PROVINCES.filter(p=>p.id!=='caba').forEach(p=>{
+      const val = PBG_HISTORICO[p.id][year];
+      const el = elements[p.id];
+      if(el){
+        el.setAttribute('class','province');
+        el.style.fill = colorFromT(computeT({scale:null}, val, allVals)).color;
+        el.dataset.cat = val;
+        el.onmousemove = (e)=>showTooltip(e, p.name+' — '+dataset.format(val));
+      }
+    });
+    const tdf = PROVINCES.find(p=>p.id==='tierradelfuego');
+    const valTdf = PBG_HISTORICO[tdf.id][year];
+    if(elements['malvinas']){
+      elements['malvinas'].setAttribute('class','province');
+      elements['malvinas'].style.fill = colorFromT(computeT({scale:null}, valTdf, allVals)).color;
+      elements['malvinas'].onmousemove = (e)=>showTooltip(e,'Islas Malvinas (Tierra del Fuego) — '+dataset.format(valTdf));
+    }
+    const valCaba = PBG_HISTORICO['caba'][year];
+    elements['caba_dot'].style.fill = colorFromT(computeT({scale:null}, valCaba, allVals)).color;
+    elements['caba'].onmousemove = (e)=>showTooltip(e,'CABA — '+dataset.format(valCaba));
+  }
 
-  timelineRenderer = function(){
-    const step = TIMELINE_STEPS[timelineStep];
-    const varDef = VARIABLES.find(v=>v.id===step.varId);
-    updateColors(varDef);
-    renderLegend(varDef);
-    stepsEl.querySelectorAll('.timeline-step').forEach((btn,i)=>{
-      btn.classList.toggle('active', i===timelineStep);
+  timelineBuildStepper = function(){
+    stepsEl.innerHTML = '';
+    const dataset = TIMELINE_DATASETS[timelineDatasetIdx];
+    dataset.steps.forEach((step, i)=>{
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'timeline-step';
+      const label = dataset.type === 'categorical' ? (step.label+'<br>'+step.sub) : step.label;
+      btn.innerHTML = '<span class="dot"></span><span class="label">'+label+'</span>';
+      btn.addEventListener('click', ()=>{
+        stopTimelinePlayback();
+        timelineStep = i;
+        renderTimelineStep();
+      });
+      stepsEl.appendChild(btn);
     });
   };
+
+  timelineRenderer = function(){
+    const dataset = TIMELINE_DATASETS[timelineDatasetIdx];
+    const step = dataset.steps[timelineStep];
+    if(dataset.type === 'categorical'){
+      const varDef = VARIABLES.find(v=>v.id===step.varId);
+      updateColorsCategorical(varDef);
+      renderLegendCategorical(varDef);
+    } else {
+      updateColorsQuantitative(dataset, step.year);
+      renderLegendQuantitative(dataset, step.year);
+    }
+    stepsEl.querySelectorAll('.timeline-step').forEach((btn,i)=>{
+      const isActive = i===timelineStep;
+      btn.classList.toggle('active', isActive);
+      if(isActive) btn.scrollIntoView({ inline:'center', block:'nearest', behavior:'smooth' });
+    });
+  };
+
+  function updateTimelineTitle(){
+    const dataset = TIMELINE_DATASETS[timelineDatasetIdx];
+    document.getElementById('timelineTitle').innerHTML =
+      dataset.title + ' <span>· ' + dataset.subtitle + '</span>';
+  }
+
+  toggleEl.querySelectorAll('.dataset-btn').forEach((btn, idx)=>{
+    btn.addEventListener('click', ()=>{
+      if(timelineDatasetIdx === idx) return;
+      stopTimelinePlayback();
+      timelineDatasetIdx = idx;
+      timelineStep = 0;
+      toggleEl.querySelectorAll('.dataset-btn').forEach((b,i)=>b.classList.toggle('active', i===idx));
+      updateTimelineTitle();
+      timelineBuildStepper();
+      timelineRenderer();
+    });
+  });
+
+  buildMapOnce();
+  updateTimelineTitle();
+  timelineBuildStepper();
   timelineRenderer();
 }
 
@@ -2010,9 +2189,10 @@ function renderTimelineStep(){
 function startTimelinePlayback(){
   document.getElementById('timelinePlayIcon').innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
   timelineTimer = setInterval(()=>{
-    timelineStep = (timelineStep + 1) % TIMELINE_STEPS.length;
+    const dataset = TIMELINE_DATASETS[timelineDatasetIdx];
+    timelineStep = (timelineStep + 1) % dataset.steps.length;
     renderTimelineStep();
-  }, 1800);
+  }, 1200);
 }
 function stopTimelinePlayback(){
   if(timelineTimer){ clearInterval(timelineTimer); timelineTimer = null; }
