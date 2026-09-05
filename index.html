@@ -266,9 +266,9 @@
 
   /* ---------- COMPARE MODE TOGGLE ---------- */
   .compare-cta{
-    display:flex; align-items:center; gap:12px; text-align:left;
-    width:100%; padding:10px 14px; margin-bottom:14px;
-    border-radius:12px; border:1px solid var(--line);
+    display:flex; align-items:center; gap:10px; text-align:left;
+    width:100%; padding:8px 12px; margin-bottom:8px;
+    border-radius:10px; border:1px solid var(--line);
     background: #0d0d0d;
     color: var(--text); cursor:pointer;
     transition: transform .15s ease, border-color .15s ease, background .15s ease;
@@ -277,16 +277,20 @@
     transform: translateY(-1px); border-color: var(--muted-2); background:#141414;
   }
   .compare-cta-icon{
-    flex:none; width:32px; height:32px; border-radius:9px;
+    flex:none; width:26px; height:26px; border-radius:8px;
     background: var(--blue-gradient); border:1px solid rgba(255,255,255,0.15); color:#fff;
     display:flex; align-items:center; justify-content:center;
   }
-  .compare-cta-text{ display:flex; flex-direction:column; gap:2px; min-width:0; }
+  .compare-cta-icon svg{ width:14px; height:14px; }
+  .compare-cta-text{ display:flex; flex-direction:column; gap:1px; min-width:0; }
   .compare-cta-title{
     display:flex; align-items:center; gap:7px;
-    font-family:'Rubik', sans-serif; font-weight:700; font-size:13.5px; color:var(--text);
+    font-family:'Rubik', sans-serif; font-weight:700; font-size:12.5px; color:var(--text);
   }
-  .compare-cta-sub{ font-size:11px; color: var(--muted); line-height:1.35; font-weight:400; }
+  .compare-cta-sub{
+    font-size:10.5px; color: var(--muted); font-weight:400;
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
 
   .compare-btn{
     display:flex; align-items:center; justify-content:center; gap:9px;
@@ -313,6 +317,96 @@
   .compare-app{ display:none; height:100vh; flex-direction:column; overflow-y:auto; }
   body.mode-compare .app{ display:none; }
   body.mode-compare .compare-app{ display:flex; }
+
+  /* ---------- CORRELATION MODE APP ---------- */
+  .correlation-app{ display:none; height:100vh; flex-direction:column; overflow-y:auto; }
+  body.mode-correlation .app{ display:none; }
+  body.mode-correlation .correlation-app{ display:flex; }
+
+  .correlation-body{
+    flex:1; display:flex; flex-direction:column; min-height:0;
+    padding: 20px 40px 18px;
+  }
+  .correlation-controls{ display:flex; gap:18px; margin-bottom:14px; flex-wrap:wrap; flex:none; }
+  .corr-label{
+    display:flex; flex-direction:column; gap:5px; font-size:11px; color:var(--muted-2);
+    font-family:'Rubik Mono One', monospace; letter-spacing:.03em;
+  }
+  .corr-label .var-select{ font-family:'Rubik', sans-serif; }
+
+  .correlation-main{ flex:1; display:flex; gap:24px; min-height:0; }
+  .correlation-chart-wrap{
+    flex:1; min-width:0; display:flex; align-items:center; justify-content:center;
+  }
+  .correlation-chart-wrap svg{ width:100%; height:100%; max-height:66vh; }
+  .correlation-side{ flex:none; width:220px; display:flex; flex-direction:column; gap:16px; }
+
+  .corr-stat{
+    padding:14px 16px; border-radius:12px; border:1px solid var(--line); background:#0d0d0d;
+    display:flex; flex-direction:column; gap:4px;
+  }
+  .corr-stat-label{ font-size:10.5px; color:var(--muted-2); text-transform:uppercase; letter-spacing:.05em; }
+  .corr-stat-value{ font-size:30px; font-weight:800; color:var(--text); font-family:'Rubik Mono One', monospace; }
+  .corr-stat-desc{ font-size:11.5px; color:var(--muted); line-height:1.4; }
+
+  .correlation-legend{ display:flex; flex-direction:column; gap:6px; overflow-y:auto; }
+
+  .corr-point{ cursor:pointer; stroke:#0a0a0a; stroke-width:1.4; transition: r .15s ease, opacity .15s ease; }
+  .corr-point:hover{ stroke:#fff; }
+  .corr-point.dim{ opacity:.25; }
+  .corr-axis-line{ stroke: var(--line); stroke-width:1.5; }
+  .corr-grid-line{ stroke: var(--line-soft); stroke-width:1; }
+  .corr-tick-label{ font-size:11px; fill: var(--muted-2); font-family:'Rubik Mono One', monospace; }
+  .corr-axis-label{ font-size:12.5px; fill: var(--muted); font-family:'Rubik', sans-serif; font-weight:600; }
+  .corr-trend-line{ stroke: var(--muted-2); stroke-width:1.6; stroke-dasharray:5,4; }
+
+  /* ---------- STORY MODE APP ---------- */
+  .story-app{ display:none; height:100vh; flex-direction:column; overflow-y:auto; }
+  body.mode-story .app{ display:none; }
+  body.mode-story .story-app{ display:flex; }
+
+  .story-body{ flex:1; display:flex; min-height:0; }
+  .story-map-col{
+    flex:1; display:flex; align-items:center; justify-content:center;
+    padding:24px; min-width:0;
+  }
+  .story-mapcanvas{ width:100%; height:100%; display:flex; align-items:center; justify-content:center; }
+  .story-mapcanvas svg{ width:100%; height:100%; max-height:82vh; }
+
+  .story-text-col{
+    flex:none; width:400px; display:flex; flex-direction:column;
+    padding: 40px 48px; border-left:1px solid var(--line);
+  }
+  .story-top{ flex:none; }
+  .story-dots{ display:flex; gap:7px; margin-bottom:16px; }
+  .story-dots span{ width:8px; height:8px; border-radius:50%; background:var(--line); transition: background .2s ease, transform .2s ease; }
+  .story-dots span.active{ background: var(--partidaria); transform:scale(1.3); }
+  .story-eyebrow{ margin:0; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted-2); font-weight:600; }
+  .story-middle{ flex:1; display:flex; flex-direction:column; justify-content:center; min-height:0; gap:16px; }
+  .story-title{ margin:0; font-size:27px; font-weight:800; line-height:1.25; color:var(--text); }
+  .story-text{ margin:0; font-size:14.5px; line-height:1.65; color:var(--muted); max-width:38ch; }
+  .story-nav{ flex:none; display:flex; align-items:center; gap:10px; }
+  .story-nav-btn{
+    display:flex; align-items:center; gap:6px; cursor:pointer;
+    padding:10px 16px; border-radius:9px; border:1px solid var(--line);
+    background:#0d0d0d; color:var(--text); font-size:13px; font-weight:600;
+    transition: border-color .15s ease, background .15s ease;
+  }
+  .story-nav-btn:hover{ border-color:var(--muted-2); background:#161616; }
+  .story-nav-btn.primary{ background: var(--blue-gradient); border-color:transparent; margin-left:auto; }
+  .story-nav-btn:disabled{ opacity:.3; cursor:default; pointer-events:none; }
+
+  .province.story-fade{ opacity:.15; }
+  .province.story-highlight{ stroke:#fff; stroke-width:2.6; filter:brightness(1.15); }
+
+  @media (max-width: 920px){
+    .story-body{ flex-direction:column-reverse; }
+    .story-text-col{ width:auto; border-left:none; border-top:1px solid var(--line); padding:20px 20px 22px; }
+    .story-middle{ gap:10px; }
+    .story-text{ max-width:none; }
+    .story-map-col{ padding:14px; }
+    .story-title{ font-size:21px; }
+  }
 
   /* ---------- TIMELINE MODE APP ---------- */
   .timeline-app{ display:none; height:100vh; flex-direction:column; overflow-y:auto; }
@@ -377,6 +471,10 @@
     .timeline-body{ padding: 18px 16px 18px; }
     .timeline-mapcanvas svg{ max-height:42vh; }
     .timeline-step .label{ font-size:9.5px; }
+    .correlation-body{ padding: 16px 16px 14px; }
+    .correlation-main{ flex-direction:column; }
+    .correlation-side{ width:auto; flex-direction:row; flex-wrap:wrap; }
+    .correlation-controls{ gap:10px; }
   }
 
   .compare-topbar{
@@ -559,6 +657,19 @@
     color: var(--muted-2); margin-bottom:9px;
   }
   .field-value{ font-size:15px; line-height:1.65; color: var(--text); }
+
+  .avg-compare-grid{ display:flex; flex-direction:column; gap:8px; }
+  .avg-compare-row{
+    display:flex; align-items:center; justify-content:space-between; gap:12px;
+    padding:11px 14px; border-radius:10px; border:1px solid var(--line-soft); background:#0d0d0d;
+  }
+  .avg-compare-name{ font-size:13.5px; color:var(--muted); }
+  .avg-compare-vals{ display:flex; align-items:baseline; gap:8px; }
+  .avg-compare-value{ font-size:14.5px; font-weight:700; color:var(--text); }
+  .avg-compare-delta{ font-size:12px; font-weight:600; font-family:'Rubik Mono One', monospace; white-space:nowrap; }
+  .avg-compare-delta.up{ color: var(--electronica); }
+  .avg-compare-delta.down{ color: var(--no); }
+  .avg-compare-delta.flat{ color: var(--muted-2); }
   .field-value.big{ font-size:16.5px; }
   .law-line{ font-size:15px; line-height:1.5; margin-bottom:6px; }
   .law-link{
@@ -643,7 +754,27 @@
       </span>
       <span class="compare-cta-text">
         <span class="compare-cta-title">Modo de comparación</span>
-        <span class="compare-cta-sub">Visualizá dos mapas lado a lado: tipo de boleta, legislatura, primarias, partido gobernante, alianza presidencial o línea de tiempo de Argentina.</span>
+        <span class="compare-cta-sub">Dos mapas lado a lado o línea de tiempo de Argentina</span>
+      </span>
+    </button>
+
+    <button class="compare-cta" id="correlationToggle" type="button">
+      <span class="compare-cta-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="16" r="2"/><circle cx="12" cy="9" r="2"/><circle cx="18" cy="13" r="2"/><circle cx="15" cy="6" r="2"/><path d="M3 20h18"/></svg>
+      </span>
+      <span class="compare-cta-text">
+        <span class="compare-cta-title">Modo correlación</span>
+        <span class="compare-cta-sub">Relación entre dos variables en un gráfico</span>
+      </span>
+    </button>
+
+    <button class="compare-cta" id="storyToggle" type="button">
+      <span class="compare-cta-icon">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+      </span>
+      <span class="compare-cta-text">
+        <span class="compare-cta-title">Modo relato</span>
+        <span class="compare-cta-sub">Recorrido guiado por 5 hallazgos de los datos</span>
       </span>
     </button>
 
@@ -793,6 +924,87 @@
   </div>
 </div>
 
+<!-- ============ CORRELATION MODE ============ -->
+<div class="correlation-app" id="correlationApp">
+  <div class="compare-topbar">
+    <p class="compare-topbar-title">Modo correlación</p>
+    <div class="compare-topbar-actions">
+      <button class="compare-btn compare-btn-close" id="correlationExit" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        Cerrar
+      </button>
+    </div>
+  </div>
+
+  <div class="correlation-body">
+    <div class="correlation-controls">
+      <label class="corr-label">Eje X
+        <select class="var-select" id="corrXSelect"></select>
+      </label>
+      <label class="corr-label">Eje Y
+        <select class="var-select" id="corrYSelect"></select>
+      </label>
+      <label class="corr-label">Colorear por
+        <select class="var-select" id="corrColorSelect"></select>
+      </label>
+    </div>
+    <div class="correlation-main">
+      <div class="correlation-chart-wrap">
+        <svg id="correlationSvg" viewBox="0 0 900 560" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      <div class="correlation-side">
+        <div class="corr-stat" id="corrStatR">
+          <span class="corr-stat-label">Correlación (r de Pearson)</span>
+          <span class="corr-stat-value" id="corrRValue">—</span>
+          <span class="corr-stat-desc" id="corrRDesc"></span>
+        </div>
+        <div class="correlation-legend" id="correlationLegend"></div>
+      </div>
+    </div>
+    <p class="compare-credit">Cada punto es una provincia. Pasá el mouse para ver el detalle, o tocalo para ver su ficha completa.</p>
+  </div>
+</div>
+
+<!-- ============ STORY MODE ============ -->
+<div class="story-app" id="storyApp">
+  <div class="compare-topbar">
+    <p class="compare-topbar-title">Modo relato <span id="storyProgress">· 1/5</span></p>
+    <div class="compare-topbar-actions">
+      <button class="compare-btn compare-btn-close" id="storyExit" type="button">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        Cerrar
+      </button>
+    </div>
+  </div>
+
+  <div class="story-body">
+    <div class="story-map-col">
+      <div class="story-mapcanvas">
+        <svg id="mapsvgS" viewBox="-10 -644 816 1885" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+    </div>
+    <div class="story-text-col">
+      <div class="story-top">
+        <div class="story-dots" id="storyDots"></div>
+        <p class="story-eyebrow" id="storyEyebrow">Hallazgo 1 de 5</p>
+      </div>
+      <div class="story-middle">
+        <h2 class="story-title" id="storyTitle"></h2>
+        <p class="story-text" id="storyText"></p>
+      </div>
+      <div class="story-nav">
+        <button class="story-nav-btn" id="storyPrev" type="button" aria-label="Anterior">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <button class="story-nav-btn primary" id="storyNext" type="button" aria-label="Siguiente">
+          Siguiente
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- ============ TIMELINE MODE ============ -->
 <div class="timeline-app" id="timelineApp">
   <div class="compare-topbar">
@@ -874,6 +1086,13 @@
       <div class="field">
         <div class="field-label">Observaciones</div>
         <div class="field-value" id="fObs"></div>
+      </div>
+
+      <hr class="sep">
+
+      <div class="field">
+        <div class="field-label">Esta provincia frente al promedio nacional</div>
+        <div class="avg-compare-grid" id="avgCompareGrid"></div>
       </div>
     </div>
   </div>
@@ -1683,9 +1902,37 @@ function openPanel(p){
   fCaracteristicas.innerHTML = p.caracteristicas;
   fPrimarias.innerHTML = p.primarias;
   fObs.innerHTML = p.obs;
+  renderAvgCompare(p);
   scrim.classList.add('show');
   document.getElementById('panel').scrollTop = 0;
 }
+
+// Para cada variable cuantitativa (diputados, padrón, población, densidad, IDH,
+// PBG), muestra el valor de esta provincia y cuánto se aleja del promedio de
+// las 24 jurisdicciones, en porcentaje.
+function renderAvgCompare(p){
+  const grid = document.getElementById('avgCompareGrid');
+  grid.innerHTML = '';
+  const quantVars = VARIABLES.filter(v=>v.type==='quantitative');
+  quantVars.forEach(varDef=>{
+    const allVals = PROVINCES.map(pr=>valueOf(varDef,pr));
+    const avg = allVals.reduce((a,b)=>a+b,0) / allVals.length;
+    const val = valueOf(varDef, p);
+    const diffPct = avg !== 0 ? ((val - avg) / avg) * 100 : 0;
+    const row = document.createElement('div');
+    row.className = 'avg-compare-row';
+    const dir = diffPct > 0.5 ? 'up' : diffPct < -0.5 ? 'down' : 'flat';
+    const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '≈';
+    const deltaTxt = Math.abs(diffPct) < 0.5 ? 'en la media' : arrow+' '+Math.abs(diffPct).toFixed(0)+'% vs. la media';
+    row.innerHTML = '<span class="avg-compare-name">'+varDef.label.replace(/\s*\(.*?\)\s*$/,'')+'</span>'
+      + '<span class="avg-compare-vals">'
+        + '<span class="avg-compare-value">'+formatQuantValue(varDef, val)+'</span>'
+        + '<span class="avg-compare-delta '+dir+'">'+deltaTxt+'</span>'
+      + '</span>';
+    grid.appendChild(row);
+  });
+}
+
 function closePanel(){
   scrim.classList.remove('show');
   document.querySelectorAll('.province').forEach(c=>c.classList.remove('active'));
@@ -1918,6 +2165,8 @@ function enterCompareMode(varA, varB){
   requestFullscreenSafe();
   hideTooltip();
   hideTimelineUI();
+  hideCorrelationUI();
+  hideStoryUI();
   document.body.classList.add('mode-compare');
   if(!compareBuilt){
     buildCompareMap('mapsvgA','legendA','varSelectA','updatedA', varA);
@@ -2207,6 +2456,8 @@ function enterTimelineMode(){
   requestFullscreenSafe();
   hideTooltip();
   hideCompareUI();
+  hideCorrelationUI();
+  hideStoryUI();
   document.body.classList.add('mode-timeline');
   if(!timelineBuilt){
     buildTimeline();
@@ -2223,6 +2474,340 @@ function exitTimelineMode(){
 }
 document.getElementById('timelineToggle').addEventListener('click', enterTimelineMode);
 document.getElementById('timelineExit').addEventListener('click', exitTimelineMode);
+
+// ============ MODO CORRELACIÓN ============
+// Gráfico de dispersión (scatter) entre dos variables cuantitativas a elección,
+// con color opcional por una tercera variable categórica, y el coeficiente de
+// correlación de Pearson calculado sobre las 24 jurisdicciones.
+let correlationBuilt = false;
+
+function pearsonR(xs, ys){
+  const n = xs.length;
+  const sumX = xs.reduce((a,b)=>a+b,0), sumY = ys.reduce((a,b)=>a+b,0);
+  const sumXY = xs.reduce((s,x,i)=>s+x*ys[i],0);
+  const sumX2 = xs.reduce((s,x)=>s+x*x,0), sumY2 = ys.reduce((s,y)=>s+y*y,0);
+  const num = n*sumXY - sumX*sumY;
+  const den = Math.sqrt((n*sumX2 - sumX*sumX) * (n*sumY2 - sumY*sumY));
+  return den === 0 ? 0 : num/den;
+}
+
+function rInterpretation(r){
+  const a = Math.abs(r);
+  const dir = r >= 0 ? 'positiva' : 'negativa';
+  if(a < 0.2) return 'Prácticamente sin relación lineal entre las dos variables.';
+  if(a < 0.4) return 'Relación '+dir+' débil.';
+  if(a < 0.6) return 'Relación '+dir+' moderada.';
+  if(a < 0.8) return 'Relación '+dir+' fuerte.';
+  return 'Relación '+dir+' muy fuerte.';
+}
+
+function buildCorrelation(){
+  const xSelect = document.getElementById('corrXSelect');
+  const ySelect = document.getElementById('corrYSelect');
+  const colorSelect = document.getElementById('corrColorSelect');
+  const quantVars = VARIABLES.filter(v=>v.type==='quantitative');
+  const catVars = VARIABLES.filter(v=>!v.type);
+
+  quantVars.forEach(v=>{
+    const o1 = document.createElement('option'); o1.value=v.id; o1.textContent=v.label; xSelect.appendChild(o1);
+    const o2 = document.createElement('option'); o2.value=v.id; o2.textContent=v.label; ySelect.appendChild(o2);
+  });
+  const noneOpt = document.createElement('option'); noneOpt.value=''; noneOpt.textContent='(un solo color)';
+  colorSelect.appendChild(noneOpt);
+  catVars.forEach(v=>{
+    const o = document.createElement('option'); o.value=v.id; o.textContent=v.label; colorSelect.appendChild(o);
+  });
+  xSelect.value = 'idh';
+  ySelect.value = 'pbg';
+  colorSelect.value = 'region';
+
+  function cssVar(name){
+    return getComputedStyle(document.documentElement).getPropertyValue('--'+name).trim() || '#5b8ff2';
+  }
+
+  function renderLegendFor(colorVar){
+    const legendEl = document.getElementById('correlationLegend');
+    legendEl.innerHTML = '';
+    if(!colorVar) return;
+    Object.keys(colorVar.categories).forEach(catKey=>{
+      const chip = document.createElement('div');
+      chip.className = 'compare-chip';
+      chip.innerHTML = '<span class="chip-dot" style="background:'+cssVar(catKey)+'"></span>'
+        + '<span class="chip-label">'+colorVar.categories[catKey]+'</span>';
+      legendEl.appendChild(chip);
+    });
+  }
+
+  function render(){
+    const xVar = VARIABLES.find(v=>v.id===xSelect.value);
+    const yVar = VARIABLES.find(v=>v.id===ySelect.value);
+    const colorVar = colorSelect.value ? VARIABLES.find(v=>v.id===colorSelect.value) : null;
+    const svg = document.getElementById('correlationSvg');
+    svg.innerHTML = '';
+
+    const xs = PROVINCES.map(p=>valueOf(xVar,p));
+    const ys = PROVINCES.map(p=>valueOf(yVar,p));
+    const r = pearsonR(xs, ys);
+    document.getElementById('corrRValue').textContent = r.toFixed(2);
+    document.getElementById('corrRDesc').textContent = rInterpretation(r);
+    renderLegendFor(colorVar);
+
+    const W=900, H=560, ML=80, MR=30, MT=24, MB=64;
+    const plotW = W-ML-MR, plotH = H-MT-MB;
+    const xMin = Math.min(...xs), xMax = Math.max(...xs);
+    const yMin = Math.min(...ys), yMax = Math.max(...ys);
+    const xPad = (xMax-xMin)*0.08 || 1, yPad = (yMax-yMin)*0.08 || 1;
+    const x0 = xMin-xPad, x1 = xMax+xPad, y0 = yMin-yPad, y1 = yMax+yPad;
+    const sx = v => ML + (v-x0)/(x1-x0)*plotW;
+    const sy = v => MT + plotH - (v-y0)/(y1-y0)*plotH;
+
+    function line(x1_,y1_,x2_,y2_,cls){
+      const el = document.createElementNS(SVG_NS,'line');
+      el.setAttribute('x1',x1_); el.setAttribute('y1',y1_); el.setAttribute('x2',x2_); el.setAttribute('y2',y2_);
+      el.setAttribute('class',cls);
+      svg.appendChild(el);
+    }
+    function text(x_,y_,str,cls,anchor){
+      const el = document.createElementNS(SVG_NS,'text');
+      el.setAttribute('x',x_); el.setAttribute('y',y_); el.setAttribute('class',cls);
+      el.setAttribute('text-anchor', anchor||'middle');
+      el.textContent = str;
+      svg.appendChild(el);
+    }
+
+    // ejes + grilla (4 marcas)
+    for(let i=0;i<=4;i++){
+      const xv = x0 + (x1-x0)*i/4;
+      const yv = y0 + (y1-y0)*i/4;
+      const px = sx(xv), py = sy(yv);
+      line(px, MT, px, MT+plotH, 'corr-grid-line');
+      line(ML, py, ML+plotW, py, 'corr-grid-line');
+      text(px, MT+plotH+22, xVar.format ? xVar.format(xv) : Math.round(xv).toLocaleString('es-AR'), 'corr-tick-label');
+      text(ML-12, py+4, yVar.format ? yVar.format(yv) : Math.round(yv).toLocaleString('es-AR'), 'corr-tick-label', 'end');
+    }
+    line(ML, MT, ML, MT+plotH, 'corr-axis-line');
+    line(ML, MT+plotH, ML+plotW, MT+plotH, 'corr-axis-line');
+    text(ML+plotW/2, H-16, xVar.label, 'corr-axis-label');
+    const yLabel = document.createElementNS(SVG_NS,'text');
+    yLabel.setAttribute('x', -(MT+plotH/2)); yLabel.setAttribute('y', 22);
+    yLabel.setAttribute('class','corr-axis-label'); yLabel.setAttribute('text-anchor','middle');
+    yLabel.setAttribute('transform','rotate(-90)');
+    yLabel.textContent = yVar.label;
+    svg.appendChild(yLabel);
+
+    // línea de tendencia (regresión lineal simple)
+    const meanX = xs.reduce((a,b)=>a+b,0)/xs.length, meanY = ys.reduce((a,b)=>a+b,0)/ys.length;
+    const stdX = Math.sqrt(xs.reduce((s,v)=>s+(v-meanX)**2,0)/xs.length);
+    const stdY = Math.sqrt(ys.reduce((s,v)=>s+(v-meanY)**2,0)/ys.length);
+    if(stdX>0){
+      const slope = r*(stdY/stdX);
+      const intercept = meanY - slope*meanX;
+      line(sx(x0), sy(intercept+slope*x0), sx(x1), sy(intercept+slope*x1), 'corr-trend-line');
+    }
+
+    // puntos
+    PROVINCES.forEach((p,i)=>{
+      const cx = sx(xs[i]), cy = sy(ys[i]);
+      const el = document.createElementNS(SVG_NS,'circle');
+      el.setAttribute('cx',cx); el.setAttribute('cy',cy); el.setAttribute('r',7);
+      el.setAttribute('class','corr-point');
+      const color = colorVar ? cssVar(valueOf(colorVar,p)) : cssVar('partidaria');
+      el.style.fill = color;
+      el.addEventListener('mousemove', e=>showTooltip(e, p.name+' — '+xVar.label+': '+(xVar.format?xVar.format(xs[i]):xs[i])+', '+yVar.label+': '+(yVar.format?yVar.format(ys[i]):ys[i])));
+      el.addEventListener('mouseleave', hideTooltip);
+      el.addEventListener('click', ()=>openPanel(p));
+      svg.appendChild(el);
+    });
+  }
+
+  [xSelect, ySelect, colorSelect].forEach(sel=>sel.addEventListener('change', render));
+  render();
+}
+
+function enterCorrelationMode(){
+  requestFullscreenSafe();
+  hideTooltip();
+  hideCompareUI();
+  hideTimelineUI();
+  hideStoryUI();
+  document.body.classList.add('mode-correlation');
+  if(!correlationBuilt){
+    buildCorrelation();
+    correlationBuilt = true;
+  }
+}
+function hideCorrelationUI(){
+  document.body.classList.remove('mode-correlation');
+}
+function exitCorrelationMode(){
+  hideCorrelationUI();
+  exitFullscreenSafe();
+}
+document.getElementById('correlationToggle').addEventListener('click', enterCorrelationMode);
+document.getElementById('correlationExit').addEventListener('click', exitCorrelationMode);
+
+// ============ MODO RELATO ============
+// Un recorrido guiado de 5 hallazgos concretos, verificados contra los datos ya
+// cargados (no son afirmaciones sueltas). Cada paso resalta en el mapa las
+// provincias relevantes y atenúa el resto.
+const STORY_STEPS = [
+  {
+    title: "Las primarias ya son minoría",
+    text: "Solo 9 de las 24 provincias todavía organizan elecciones primarias obligatorias para sus cargos locales. La ola de eliminación de las PASO no fue solo un fenómeno nacional.",
+    variableId: "primarias",
+    highlight: () => PROVINCES.filter(p => !/^sin\s+ele/i.test((p.primarias||"").trim())).map(p=>p.id)
+  },
+  {
+    title: "Buenos Aires pesa más de un tercio del padrón",
+    text: "De los 35.987.634 electores habilitados para las legislativas de 2025, 13.353.974 —el 37%— están en la provincia de Buenos Aires: más que las 15 provincias más chicas juntas.",
+    variableId: "padron",
+    highlight: () => ["buenosaires"]
+  },
+  {
+    title: "Neuquén, de rezagada a potencia energética",
+    text: "En 1965 el PBG per cápita de Neuquén estaba por debajo de la media nacional (64 sobre 100). Con el boom hidrocarburífero hoy la más que duplica (236 sobre 100): una de las transformaciones económicas más marcadas del país.",
+    variableId: "pbg",
+    highlight: () => ["neuquen"]
+  },
+  {
+    title: "CABA nunca dejó el primer puesto en desarrollo humano",
+    text: "Con un IDH de 0,882, la Ciudad de Buenos Aires encabeza el ranking de las 24 jurisdicciones — aunque las 24, sin excepción, están en la categoría \"Muy Alto\" del PNUD.",
+    variableId: "idh",
+    highlight: () => ["caba"]
+  },
+  {
+    title: "El vuelco hacia La Libertad Avanza en el balotaje",
+    text: "LLA ganó en 10 provincias en la primera vuelta de 2023. En la segunda ese número se duplicó a 20. Estas son, puntualmente, las provincias que cambiaron de bando entre las dos vueltas.",
+    variableId: "alianza_2023_2",
+    highlight: () => PROVINCES.filter(p => ALIANZA_PROVINCIAL[p.id]["2023_1"] !== "lla" && ALIANZA_PROVINCIAL[p.id]["2023_2"] === "lla").map(p=>p.id)
+  }
+];
+let storyBuilt = false;
+let storyStep = 0;
+const storyElements = {};
+
+function buildStoryMapOnce(){
+  const svgEl = document.getElementById('mapsvgS');
+  PROVINCES.filter(p=>p.id!=='caba').forEach(p=>{
+    const d = PROVINCE_D[p.id];
+    if(!d) return;
+    const el = document.createElementNS(SVG_NS,'path');
+    el.setAttribute('d', d);
+    el.dataset.id = p.id;
+    el.addEventListener('click', ()=>openPanel(p));
+    el.addEventListener('mouseleave', hideTooltip);
+    svgEl.appendChild(el);
+    storyElements[p.id] = el;
+  });
+  const tdf = PROVINCES.find(p=>p.id==='tierradelfuego');
+  const dMalvinas = PROVINCE_D['malvinas'];
+  if(dMalvinas){
+    const el = document.createElementNS(SVG_NS,'path');
+    el.setAttribute('d', dMalvinas);
+    el.dataset.id = 'malvinas';
+    el.addEventListener('click', ()=>openPanel(tdf));
+    el.addEventListener('mouseleave', hideTooltip);
+    svgEl.appendChild(el);
+    storyElements['malvinas'] = el;
+  }
+  const caba = PROVINCES.find(p=>p.id==='caba');
+  const g = document.createElementNS(SVG_NS,'g');
+  g.setAttribute('class','caba-pin');
+  g.dataset.id = 'caba';
+  const dot = document.createElementNS(SVG_NS,'circle');
+  dot.setAttribute('cx', 552.8); dot.setAttribute('cy', 79.3); dot.setAttribute('r', 18);
+  dot.setAttribute('class','caba-dot');
+  g.appendChild(dot);
+  g.addEventListener('click', ()=>openPanel(caba));
+  g.addEventListener('mouseleave', hideTooltip);
+  svgEl.appendChild(g);
+  storyElements['caba'] = g;
+  storyElements['caba_dot'] = dot;
+}
+
+function renderStoryStep(){
+  const step = STORY_STEPS[storyStep];
+  const varDef = VARIABLES.find(v=>v.id===step.variableId);
+  const isQuant = varDef.type === 'quantitative';
+  const highlightIds = new Set(step.highlight());
+  let allVals = [];
+  if(isQuant) allVals = PROVINCES.map(p=>valueOf(varDef,p));
+
+  function paint(id, catVal, isCaba){
+    const el = isCaba ? storyElements['caba_dot'] : storyElements[id];
+    if(!el) return;
+    if(isQuant){
+      const color = colorFromT(computeT(varDef, catVal, allVals)).color;
+      if(isCaba) el.style.fill = color; else { el.setAttribute('class','province'); el.style.fill = color; }
+    } else {
+      if(isCaba) el.style.fill = 'var(--'+catVal+')';
+      else { el.setAttribute('class','province '+catVal); el.style.fill=''; }
+    }
+    const target = isCaba ? storyElements['caba'] : el;
+    target.classList.toggle('story-highlight', highlightIds.has(id));
+    target.classList.toggle('story-fade', !highlightIds.has(id));
+  }
+
+  PROVINCES.filter(p=>p.id!=='caba').forEach(p=>paint(p.id, valueOf(varDef,p), false));
+  const tdf = PROVINCES.find(p=>p.id==='tierradelfuego');
+  if(storyElements['malvinas']) paint('malvinas', valueOf(varDef,tdf), false);
+  const caba = PROVINCES.find(p=>p.id==='caba');
+  paint('caba', valueOf(varDef,caba), true);
+
+  document.getElementById('storyEyebrow').textContent = 'Hallazgo '+(storyStep+1)+' de '+STORY_STEPS.length;
+  document.getElementById('storyProgress').textContent = '· '+(storyStep+1)+'/'+STORY_STEPS.length;
+  document.getElementById('storyTitle').textContent = step.title;
+  document.getElementById('storyText').textContent = step.text;
+  document.getElementById('storyPrev').disabled = storyStep === 0;
+  const nextBtn = document.getElementById('storyNext');
+  nextBtn.innerHTML = storyStep === STORY_STEPS.length-1
+    ? 'Volver a empezar <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 1 3 6.7"/><path d="M3 21v-5h5"/></svg>'
+    : 'Siguiente <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>';
+  document.querySelectorAll('#storyDots span').forEach((dot,i)=>dot.classList.toggle('active', i===storyStep));
+}
+
+function buildStory(){
+  const dotsEl = document.getElementById('storyDots');
+  STORY_STEPS.forEach((s,i)=>{
+    const dot = document.createElement('span');
+    dot.addEventListener('click', ()=>{ storyStep = i; renderStoryStep(); });
+    dotsEl.appendChild(dot);
+  });
+  buildStoryMapOnce();
+  document.getElementById('storyPrev').addEventListener('click', ()=>{
+    if(storyStep>0){ storyStep--; renderStoryStep(); }
+  });
+  document.getElementById('storyNext').addEventListener('click', ()=>{
+    storyStep = (storyStep+1) % STORY_STEPS.length;
+    renderStoryStep();
+  });
+  renderStoryStep();
+}
+
+function enterStoryMode(){
+  requestFullscreenSafe();
+  hideTooltip();
+  hideCompareUI();
+  hideTimelineUI();
+  hideCorrelationUI();
+  document.body.classList.add('mode-story');
+  if(!storyBuilt){
+    buildStory();
+    storyBuilt = true;
+  } else {
+    storyStep = 0;
+    renderStoryStep();
+  }
+}
+function hideStoryUI(){
+  document.body.classList.remove('mode-story');
+}
+function exitStoryMode(){
+  hideStoryUI();
+  exitFullscreenSafe();
+}
+document.getElementById('storyToggle').addEventListener('click', enterStoryMode);
+document.getElementById('storyExit').addEventListener('click', exitStoryMode);
 
 // Si la URL trae parámetros de comparación (?compare=1&a=...&b=...), abrir el modo
 // de comparación directamente con esas variables ya seleccionadas.
