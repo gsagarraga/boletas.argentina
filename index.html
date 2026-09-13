@@ -9,7 +9,7 @@
 <!-- Open Graph / redes sociales -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Mapa Electoral Argentino">
-<meta property="og:description" content="24 provincias, 15 variables: tipo de boleta, sistema legislativo, alianzas presidenciales, IDH, PBG y más. Compará dos mapas o recorré la línea de tiempo de Argentina.">
+<meta property="og:description" content="24 provincias, 17 variables: tipo de boleta, sistema legislativo, alianzas presidenciales, IDH, PBG y más. Compará dos mapas o recorré la línea de tiempo de Argentina.">
 <meta property="og:image" content="og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -19,7 +19,7 @@
 <!-- Twitter/X card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Mapa Electoral Argentino">
-<meta name="twitter:description" content="24 provincias, 15 variables: tipo de boleta, sistema legislativo, alianzas presidenciales, IDH, PBG y más.">
+<meta name="twitter:description" content="24 provincias, 17 variables: tipo de boleta, sistema legislativo, alianzas presidenciales, IDH, PBG y más.">
 <meta name="twitter:image" content="og-image.png">
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230a0a0a'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%238fb2f7'/%3E%3Cstop offset='1' stop-color='%233f6fd6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M14 24h36l-3.4 27.4A4 4 0 0 1 42.6 55H21.4a4 4 0 0 1-4-3.6L14 24z' fill='url(%23g)'/%3E%3Crect x='11' y='16' width='42' height='10' rx='3' fill='url(%23g)'/%3E%3Crect x='27' y='18.7' width='10' height='4.6' rx='1.4' fill='%230a0a0a'/%3E%3C/svg%3E">
@@ -401,11 +401,13 @@
 
   @media (max-width: 920px){
     .story-body{ flex-direction:column-reverse; }
-    .story-text-col{ width:auto; border-left:none; border-top:1px solid var(--line); padding:20px 20px 22px; }
-    .story-middle{ gap:10px; }
-    .story-text{ max-width:none; }
-    .story-map-col{ padding:14px; }
-    .story-title{ font-size:21px; }
+    .story-text-col{ width:auto; border-left:none; border-top:1px solid var(--line); padding:18px 20px 20px; flex:none; }
+    .story-middle{ gap:8px; }
+    .story-text{ max-width:none; font-size:13.5px; }
+    .story-map-col{ padding:10px; min-height:38vh; flex:1; }
+    .story-mapcanvas svg{ max-height:38vh; }
+    .story-title{ font-size:20px; }
+    .story-nav-btn{ padding:9px 13px; font-size:12.5px; }
   }
 
   /* ---------- TIMELINE MODE APP ---------- */
@@ -471,10 +473,18 @@
     .timeline-body{ padding: 18px 16px 18px; }
     .timeline-mapcanvas svg{ max-height:42vh; }
     .timeline-step .label{ font-size:9.5px; }
+    .timeline-dataset-toggle{ flex-wrap:wrap; }
+    .dataset-btn{ font-size:11px; padding:6px 11px; }
     .correlation-body{ padding: 16px 16px 14px; }
-    .correlation-main{ flex-direction:column; }
-    .correlation-side{ width:auto; flex-direction:row; flex-wrap:wrap; }
-    .correlation-controls{ gap:10px; }
+    .correlation-controls{ flex-direction:column; gap:10px; }
+    .corr-label{ width:100%; }
+    .corr-label .var-select{ width:100%; }
+    .correlation-main{ flex-direction:column; gap:14px; }
+    .correlation-chart-wrap{ min-height:300px; }
+    .correlation-chart-wrap svg{ max-height:52vh; }
+    .correlation-side{ width:auto; flex-direction:row; flex-wrap:wrap; gap:10px; }
+    .corr-stat{ flex:1; min-width:150px; }
+    .correlation-legend{ flex-direction:row; flex-wrap:wrap; }
   }
 
   .compare-topbar{
@@ -710,6 +720,8 @@
     .panel-inner{ padding: 80px 22px 60px; }
     .panel-top h3{ font-size:30px; }
     .grid2{ grid-template-columns: 1fr; gap:0; }
+    .avg-compare-row{ flex-wrap:wrap; gap:4px 10px; }
+    .avg-compare-vals{ margin-left:auto; }
   }
 
   @media (prefers-reduced-motion: reduce){
@@ -774,7 +786,7 @@
       </span>
       <span class="compare-cta-text">
         <span class="compare-cta-title">Modo relato</span>
-        <span class="compare-cta-sub">Recorrido guiado por 5 hallazgos de los datos</span>
+        <span class="compare-cta-sub">Recorrido guiado por 10 hallazgos de los datos</span>
       </span>
     </button>
 
@@ -968,7 +980,7 @@
 <!-- ============ STORY MODE ============ -->
 <div class="story-app" id="storyApp">
   <div class="compare-topbar">
-    <p class="compare-topbar-title">Modo relato <span id="storyProgress">· 1/5</span></p>
+    <p class="compare-topbar-title">Modo relato <span id="storyProgress">· 1/10</span></p>
     <div class="compare-topbar-actions">
       <button class="compare-btn compare-btn-close" id="storyExit" type="button">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
@@ -986,7 +998,7 @@
     <div class="story-text-col">
       <div class="story-top">
         <div class="story-dots" id="storyDots"></div>
-        <p class="story-eyebrow" id="storyEyebrow">Hallazgo 1 de 5</p>
+        <p class="story-eyebrow" id="storyEyebrow">Hallazgo 1 de 10</p>
       </div>
       <div class="story-middle">
         <h2 class="story-title" id="storyTitle"></h2>
@@ -1592,6 +1604,7 @@ const VARIABLES = [
   {
     id: "diputados",
     label: "Cantidad de diputados/as nacionales por distrito",
+    short: "Diputados/as",
     type: "quantitative",
     unit: "diputados/as",
     source: "Cámara Nacional Electoral",
@@ -1601,6 +1614,7 @@ const VARIABLES = [
   {
     id: "padron",
     label: "Electores habilitados (padrón 2025)",
+    short: "Padrón 2025",
     type: "quantitative",
     unit: "electores",
     source: "Cámara Nacional Electoral, padrón definitivo, elecciones legislativas 26/10/2025",
@@ -1645,6 +1659,7 @@ const VARIABLES = [
   {
     id: "poblacion",
     label: "Población total (Censo 2022)",
+    short: "Población",
     type: "quantitative",
     unit: "habitantes",
     source: "INDEC, Censo Nacional de Población, Hogares y Viviendas 2022 (resultados definitivos)",
@@ -1654,6 +1669,7 @@ const VARIABLES = [
   {
     id: "densidad",
     label: "Densidad poblacional (hab/km²)",
+    short: "Densidad",
     type: "quantitative",
     unit: "hab/km²",
     source: "INDEC (Censo 2022) e IGN (superficies). Tierra del Fuego calculada solo sobre la Isla Grande",
@@ -1664,6 +1680,7 @@ const VARIABLES = [
   {
     id: "pbg",
     label: "PBG per cápita (relativo a la media nacional)",
+    short: "PBG per cápita (rel.)",
     type: "quantitative",
     unit: "índice",
     source: "CEPAL y Ministerio de Economía, \"Desagregación provincial del valor agregado bruto de la Argentina, base 2004\" (dato 2022, vía Fundar/Argendata). Media nacional = 100",
@@ -1681,6 +1698,7 @@ const VARIABLES = [
   {
     id: "idh",
     label: "Índice de Desarrollo Humano (PNUD 2021)",
+    short: "IDH",
     type: "quantitative",
     unit: "IDH",
     source: "PNUD Argentina, última desagregación provincial publicada (2021). Las 24 jurisdicciones están en la categoría \"Muy Alto\" (IDH > 0,8); los matices reflejan diferencias relativas dentro del país, no respecto al resto del mundo",
@@ -1924,7 +1942,7 @@ function renderAvgCompare(p){
     const dir = diffPct > 0.5 ? 'up' : diffPct < -0.5 ? 'down' : 'flat';
     const arrow = dir === 'up' ? '▲' : dir === 'down' ? '▼' : '≈';
     const deltaTxt = Math.abs(diffPct) < 0.5 ? 'en la media' : arrow+' '+Math.abs(diffPct).toFixed(0)+'% vs. la media';
-    row.innerHTML = '<span class="avg-compare-name">'+varDef.label.replace(/\s*\(.*?\)\s*$/,'')+'</span>'
+    row.innerHTML = '<span class="avg-compare-name">'+(varDef.short || varDef.label.replace(/\s*\(.*?\)\s*$/,''))+'</span>'
       + '<span class="avg-compare-vals">'
         + '<span class="avg-compare-value">'+formatQuantValue(varDef, val)+'</span>'
         + '<span class="avg-compare-delta '+dir+'">'+deltaTxt+'</span>'
@@ -2552,7 +2570,24 @@ function buildCorrelation(){
     document.getElementById('corrRDesc').textContent = rInterpretation(r);
     renderLegendFor(colorVar);
 
-    const W=900, H=560, ML=80, MR=30, MT=24, MB=64;
+    // Formato compacto para las marcas de los ejes (no el mismo que el tooltip,
+    // que puede ser largo): números grandes como "13,4M" o "191k".
+    function axisTick(value, varDef){
+      if(varDef.id === 'idh') return value.toFixed(2).replace('.', ',');
+      if(varDef.id === 'pbg') return (value/100).toFixed(1).replace('.', ',')+'×';
+      if(Math.abs(value) >= 1000000) return (value/1000000).toFixed(1).replace('.', ',')+'M';
+      if(Math.abs(value) >= 1000) return (value/1000).toFixed(0)+'k';
+      return value.toLocaleString('es-AR', {maximumFractionDigits:1});
+    }
+
+    // En pantallas angostas, un gráfico 900x560 (muy panorámico) se achica tanto
+    // que el texto queda ilegible. Uso un lienzo más cuadrado/vertical ahí, con
+    // márgenes más chicos, y actualizo el viewBox real del SVG para que coincida.
+    const isNarrow = window.innerWidth < 700;
+    const W = isNarrow ? 620 : 900;
+    const H = isNarrow ? 700 : 560;
+    const ML = isNarrow ? 78 : 100, MR = isNarrow ? 20 : 30, MT = 24, MB = isNarrow ? 56 : 64;
+    svg.setAttribute('viewBox', '0 0 '+W+' '+H);
     const plotW = W-ML-MR, plotH = H-MT-MB;
     const xMin = Math.min(...xs), xMax = Math.max(...xs);
     const yMin = Math.min(...ys), yMax = Math.max(...ys);
@@ -2582,17 +2617,17 @@ function buildCorrelation(){
       const px = sx(xv), py = sy(yv);
       line(px, MT, px, MT+plotH, 'corr-grid-line');
       line(ML, py, ML+plotW, py, 'corr-grid-line');
-      text(px, MT+plotH+22, xVar.format ? xVar.format(xv) : Math.round(xv).toLocaleString('es-AR'), 'corr-tick-label');
-      text(ML-12, py+4, yVar.format ? yVar.format(yv) : Math.round(yv).toLocaleString('es-AR'), 'corr-tick-label', 'end');
+      text(px, MT+plotH+22, axisTick(xv, xVar), 'corr-tick-label');
+      text(ML-14, py+4, axisTick(yv, yVar), 'corr-tick-label', 'end');
     }
     line(ML, MT, ML, MT+plotH, 'corr-axis-line');
     line(ML, MT+plotH, ML+plotW, MT+plotH, 'corr-axis-line');
-    text(ML+plotW/2, H-16, xVar.label, 'corr-axis-label');
+    text(ML+plotW/2, H-16, xVar.short || xVar.label, 'corr-axis-label');
     const yLabel = document.createElementNS(SVG_NS,'text');
-    yLabel.setAttribute('x', -(MT+plotH/2)); yLabel.setAttribute('y', 22);
+    yLabel.setAttribute('x', -(MT+plotH/2)); yLabel.setAttribute('y', 16);
     yLabel.setAttribute('class','corr-axis-label'); yLabel.setAttribute('text-anchor','middle');
     yLabel.setAttribute('transform','rotate(-90)');
-    yLabel.textContent = yVar.label;
+    yLabel.textContent = yVar.short || yVar.label;
     svg.appendChild(yLabel);
 
     // línea de tendencia (regresión lineal simple)
@@ -2622,6 +2657,11 @@ function buildCorrelation(){
 
   [xSelect, ySelect, colorSelect].forEach(sel=>sel.addEventListener('change', render));
   render();
+  let corrResizeTimer = null;
+  window.addEventListener('resize', ()=>{
+    clearTimeout(corrResizeTimer);
+    corrResizeTimer = setTimeout(render, 150);
+  });
 }
 
 function enterCorrelationMode(){
@@ -2647,7 +2687,7 @@ document.getElementById('correlationToggle').addEventListener('click', enterCorr
 document.getElementById('correlationExit').addEventListener('click', exitCorrelationMode);
 
 // ============ MODO RELATO ============
-// Un recorrido guiado de 5 hallazgos concretos, verificados contra los datos ya
+// Un recorrido guiado de 10 hallazgos concretos, verificados contra los datos ya
 // cargados (no son afirmaciones sueltas). Cada paso resalta en el mapa las
 // provincias relevantes y atenúa el resto.
 const STORY_STEPS = [
@@ -2680,6 +2720,36 @@ const STORY_STEPS = [
     text: "LLA ganó en 10 provincias en la primera vuelta de 2023. En la segunda ese número se duplicó a 20. Estas son, puntualmente, las provincias que cambiaron de bando entre las dos vueltas.",
     variableId: "alianza_2023_2",
     highlight: () => PROVINCES.filter(p => ALIANZA_PROVINCIAL[p.id]["2023_1"] !== "lla" && ALIANZA_PROVINCIAL[p.id]["2023_2"] === "lla").map(p=>p.id)
+  },
+  {
+    title: "Pocas provincias han adoptado el sistema electrónico",
+    text: "Solo 3 de las 24 jurisdicciones —CABA, Neuquén y Salta— usan Boleta Única Electrónica. La mayoría (15) todavía vota con boleta partidaria, y 6 usan Boleta Única de Papel.",
+    variableId: "boleta",
+    highlight: () => PROVINCES.filter(p => p.cat === "electronica").map(p=>p.id)
+  },
+  {
+    title: "8 provincias tienen dos cámaras legislativas",
+    text: "La mayoría del país (16 de 24) legisla con una sola cámara. Buenos Aires, Catamarca, Corrientes, Entre Ríos, Mendoza, Salta, San Luis y Santa Fe son la excepción bicameral.",
+    variableId: "legislatura",
+    highlight: () => PROVINCES.filter(p => p.legislatura === "Bicameral").map(p=>p.id)
+  },
+  {
+    title: "Los partidos provinciales gobiernan más que el PJ",
+    text: "En 8 provincias gobierna una fuerza estrictamente provincial — más que el Justicialismo (7), la UCR (6) o el PRO (3). El mapa político argentino no se explica solo con los partidos nacionales.",
+    variableId: "gobierno",
+    highlight: () => PROVINCES.filter(p => GOBIERNO_PROVINCIAL[p.id] === "provincial").map(p=>p.id)
+  },
+  {
+    title: "El voto de Tierra del Fuego pesa 6 veces más",
+    text: "Cada diputado nacional de Buenos Aires representa unos 190.771 electores. En Tierra del Fuego, cada banca representa solo 30.624 — un desequilibrio de representación de 6 a 1 entre ambos extremos.",
+    variableId: "diputados",
+    highlight: () => ["buenosaires", "tierradelfuego"]
+  },
+  {
+    title: "De 15.169 a 1,4 habitantes por km²",
+    text: "CABA y Santa Cruz muestran la desigualdad territorial más extrema del país: la densidad poblacional de la Ciudad de Buenos Aires es más de 10.000 veces la de Santa Cruz.",
+    variableId: "densidad",
+    highlight: () => ["caba", "santacruz"]
   }
 ];
 let storyBuilt = false;
