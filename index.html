@@ -158,9 +158,9 @@
   .map-col{ flex:1; display:flex; flex-direction:column; min-width:0; min-height:0; }
   .legend-rail{ flex:none; width:260px; display:flex; flex-direction:column; padding-top:2px; }
 
-  .maptop{ display:flex; justify-content:space-between; align-items:baseline; margin-bottom: 10px; }
-  .maptop h2{ font-size:14px; margin:0; color:var(--muted); font-weight:600; letter-spacing:.02em; }
-  .maptop .updated{ font-size:11.5px; color:var(--muted-2); font-family:'Rubik Mono One', monospace; }
+  .maptop{ display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom: 10px; }
+  .maptop .var-select{ flex:1; min-width:0; max-width:340px; }
+  .maptop .updated{ font-size:11.5px; color:var(--muted-2); font-family:'Rubik Mono One', monospace; flex:none; }
 
   .mapcanvas{
     flex:1;
@@ -753,11 +753,11 @@
             </svg>
             Argentina
           </p>
-          <h1>Tipo de boleta electoral<span>según legislación provincial vigente</span></h1>
+          <h1 id="mainTitle">Tipo de boleta electoral<span id="mainTitleSub">Sistema electoral</span></h1>
         </div>
       </div>
-      <p class="lede">Cada una de las 24 jurisdicciones argentinas define su propio instrumento de votación. Tocá una provincia en el mapa para ver su boleta, la legislación que la regula, cómo se organiza su Poder Legislativo y cómo se eligen sus cargos.</p>
-      <p class="lede lede-more">Si te interesa profundizar, <a class="inline-link" href="https://gsagarraga.github.io/eltipodeboleta.importa/" target="_blank" rel="noopener">acá podés encontrar más información</a> sobre tipos de boletas y su relación con los resultados electorales.</p>
+      <p class="lede">Elegí una variable en el mapa y explorá cómo varía entre las 24 jurisdicciones argentinas. Tocá una provincia para ver su ficha completa, con todos los datos cargados y su comparación con el promedio nacional.</p>
+      <p class="lede lede-more">Este proyecto arrancó como un análisis de tipos de boleta electoral — si te interesa esa parte en particular, <a class="inline-link" href="https://gsagarraga.github.io/eltipodeboleta.importa/" target="_blank" rel="noopener">acá podés encontrar el análisis original</a>.</p>
     </div>
 
     <button class="compare-cta" id="compareToggle" type="button">
@@ -814,7 +814,7 @@
   <main class="mapwrap">
     <div class="map-col">
       <div class="maptop">
-        <h2>Mapa interactivo · 23 provincias + CABA</h2>
+        <select class="var-select" id="mainVarSelect"></select>
         <span class="updated">ACT. 20·08·2026</span>
       </div>
       <div class="mapcanvas" id="mapcanvas">
@@ -837,26 +837,10 @@
     </div>
 
     <aside class="legend-rail">
-      <div class="legend" id="legend">
-        <div class="legend-item" data-filter="bup">
-          <span class="swatch" style="background:var(--bup)"></span>
-          <span class="legend-text"><b>Boleta Única de Papel</b></span>
-          <span class="legend-count" id="count-bup"></span>
-        </div>
-        <div class="legend-item" data-filter="electronica">
-          <span class="swatch" style="background:var(--electronica)"></span>
-          <span class="legend-text"><b>Boleta Única Electrónica</b></span>
-          <span class="legend-count" id="count-electronica"></span>
-        </div>
-        <div class="legend-item" data-filter="partidaria">
-          <span class="swatch" style="background:var(--partidaria)"></span>
-          <span class="legend-text"><b>Boleta partidaria</b></span>
-          <span class="legend-count" id="count-partidaria"></span>
-        </div>
-      </div>
+      <div class="legend" id="legend"></div>
       <p class="hint">
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
-        Seleccioná el tipo de boleta para filtrar el mapa, o una provincia para ver su ficha completa.
+        <span id="mainHintText">Seleccioná una categoría para filtrar el mapa, o tocá una provincia para ver su ficha completa.</span>
       </p>
     </aside>
 
@@ -1579,10 +1563,11 @@ const ACTIVIDAD_CATEGORIES = {
 // y las categorías/colores con los que se pinta el mapa. Las de type:"quantitative"
 // usan una escala de color continua (gradiente) en vez de categorías fijas.
 const VARIABLES = [
-  { id: "boleta", label: "Tipo de boleta electoral", field: "cat", categories: CAT_LABEL, group: "Sistema electoral" },
+  { id: "boleta", label: "Tipo de boleta electoral", short: "Tipo de boleta", field: "cat", categories: CAT_LABEL, group: "Sistema electoral" },
   {
     id: "legislatura",
     label: "Forma de organización del Poder Legislativo",
+    short: "Poder Legislativo",
     getValue: p => p.legislatura === "Bicameral" ? "bicameral" : "unicameral",
     categories: { bicameral: "Bicameral", unicameral: "Unicameral" },
     group: "Sistema electoral"
@@ -1590,6 +1575,7 @@ const VARIABLES = [
   {
     id: "primarias",
     label: "Elecciones primarias",
+    short: "Primarias",
     getValue: p => /^sin\s+ele/i.test((p.primarias || "").trim()) ? "no" : "si",
     categories: { si: "Sí", no: "No" },
     group: "Sistema electoral"
@@ -1597,6 +1583,7 @@ const VARIABLES = [
   {
     id: "gobierno",
     label: "Partido gobernante a nivel provincial",
+    short: "Partido gobernante",
     getValue: p => GOBIERNO_PROVINCIAL[p.id],
     categories: { justicialista: "Partido Justicialista", pro: "PRO", ucr: "UCR", provincial: "Partido provincial" },
     group: "Sistema electoral"
@@ -1624,6 +1611,7 @@ const VARIABLES = [
   {
     id: "alianza_2015_1",
     label: "Alianza ganadora (presidencial) — 1ra vuelta 2015",
+    short: "Alianza — 1ra vta. 2015",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2015_1"],
     categories: ALIANZA_CATEGORIES_BY_YEAR["2015_1"],
     group: "Resultados electorales"
@@ -1631,6 +1619,7 @@ const VARIABLES = [
   {
     id: "alianza_2015_2",
     label: "Alianza ganadora (presidencial) — 2da vuelta 2015",
+    short: "Alianza — 2da vta. 2015",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2015_2"],
     categories: ALIANZA_CATEGORIES_BY_YEAR["2015_2"],
     group: "Resultados electorales"
@@ -1638,6 +1627,7 @@ const VARIABLES = [
   {
     id: "alianza_2019",
     label: "Alianza ganadora (presidencial) — Elecciones generales 2019",
+    short: "Alianza — 2019",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2019"],
     categories: ALIANZA_CATEGORIES_BY_YEAR["2019"],
     group: "Resultados electorales"
@@ -1645,6 +1635,7 @@ const VARIABLES = [
   {
     id: "alianza_2023_1",
     label: "Alianza ganadora (presidencial) — 1ra vuelta 2023",
+    short: "Alianza — 1ra vta. 2023",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2023_1"],
     categories: ALIANZA_CATEGORIES_BY_YEAR["2023_1"],
     group: "Resultados electorales"
@@ -1652,6 +1643,7 @@ const VARIABLES = [
   {
     id: "alianza_2023_2",
     label: "Alianza ganadora (presidencial) — 2da vuelta 2023",
+    short: "Alianza — 2da vta. 2023",
     getValue: p => ALIANZA_PROVINCIAL[p.id]["2023_2"],
     categories: ALIANZA_CATEGORIES_BY_YEAR["2023_2"],
     group: "Resultados electorales"
@@ -1691,6 +1683,7 @@ const VARIABLES = [
   {
     id: "region",
     label: "Región geográfica/histórica",
+    short: "Región geográfica",
     getValue: p => REGION_PROVINCIAL[p.id],
     categories: REGION_CATEGORIES,
     group: "Geografía"
@@ -1710,6 +1703,7 @@ const VARIABLES = [
   {
     id: "actividad",
     label: "Actividad económica principal",
+    short: "Actividad económica",
     getValue: p => ACTIVIDAD_PROVINCIAL[p.id],
     categories: ACTIVIDAD_CATEGORIES,
     group: "Desarrollo y economía"
@@ -1720,6 +1714,36 @@ const VARIABLES = [
 // usando getValue si la variable lo define, o el campo directo en caso contrario.
 function valueOf(varDef, p){
   return varDef.getValue ? varDef.getValue(p) : p[varDef.field];
+}
+
+// Símbolo por tipo de variable, usado como ícono de cada <optgroup> — los
+// <optgroup> nativos no admiten SVG/HTML en su label, solo texto.
+const GROUP_ICONS = {
+  "Sistema electoral": "🗳️",
+  "Resultados electorales": "📊",
+  "Demografía": "👥",
+  "Geografía": "🗺️",
+  "Desarrollo y economía": "💰"
+};
+
+// Puebla un <select> con las 17 variables agrupadas por tipo. Se usa tanto en
+// el mapa principal como en cada panel del modo comparación, para no repetir
+// esta lógica en dos lugares distintos.
+function populateVariableSelect(selectEl){
+  const groupEls = {};
+  VARIABLES.forEach(v=>{
+    const groupName = v.group || "Otras";
+    if(!groupEls[groupName]){
+      groupEls[groupName] = document.createElement('optgroup');
+      const icon = GROUP_ICONS[groupName] ? GROUP_ICONS[groupName]+' ' : '';
+      groupEls[groupName].label = icon + groupName;
+      selectEl.appendChild(groupEls[groupName]);
+    }
+    const opt = document.createElement('option');
+    opt.value = v.id;
+    opt.textContent = v.label;
+    groupEls[groupName].appendChild(opt);
+  });
 }
 
 // Formatea el valor de una variable cuantitativa para mostrar en el tooltip:
@@ -1813,56 +1837,6 @@ const tooltip = document.getElementById('tooltip');
   });
 })();
 
-// render provinces (all except CABA, which is a marker)
-PROVINCES.filter(p => p.id !== 'caba').forEach(p => {
-  const d = PROVINCE_D[p.id];
-  if(!d) return;
-  const el = document.createElementNS(SVG_NS, 'path');
-  el.setAttribute('d', d);
-  el.setAttribute('class', 'province ' + p.cat);
-  el.dataset.id = p.id;
-  el.dataset.cat = p.cat;
-  el.addEventListener('click', ()=>openPanel(p));
-  el.addEventListener('mousemove', (e)=> showTooltip(e, p.name));
-  el.addEventListener('mouseleave', hideTooltip);
-  svg.appendChild(el);
-});
-
-// Islas Malvinas — parte de Tierra del Fuego; al hacer click abre la misma ficha provincial
-(function(){
-  const tdf = PROVINCES.find(p=>p.id==='tierradelfuego');
-  const d = PROVINCE_D['malvinas'];
-  if(!d) return;
-  const el = document.createElementNS(SVG_NS, 'path');
-  el.setAttribute('d', d);
-  el.setAttribute('class', 'province ' + tdf.cat);
-  el.dataset.id = 'malvinas';
-  el.dataset.cat = tdf.cat;
-  el.addEventListener('click', ()=>openPanel(tdf));
-  el.addEventListener('mousemove', (e)=> showTooltip(e, 'Islas Malvinas (Tierra del Fuego)'));
-  el.addEventListener('mouseleave', hideTooltip);
-  svg.appendChild(el);
-})();
-
-// CABA pin — ubicada sobre la costa real de Buenos Aires (calibrada por lat/long), sin etiqueta de texto
-(function(){
-  const caba = PROVINCES.find(p=>p.id==='caba');
-  const g = document.createElementNS(SVG_NS,'g');
-  g.setAttribute('class','caba-pin');
-  g.dataset.id = 'caba';
-  g.dataset.cat = 'electronica';
-
-  const dot = document.createElementNS(SVG_NS,'circle');
-  dot.setAttribute('cx', 552.8); dot.setAttribute('cy', 79.3); dot.setAttribute('r', 18);
-  dot.setAttribute('class','caba-dot');
-  g.appendChild(dot);
-
-  g.addEventListener('click', ()=>openPanel(caba));
-  g.addEventListener('mousemove', (e)=> showTooltip(e, 'CABA'));
-  g.addEventListener('mouseleave', hideTooltip);
-  svg.appendChild(g);
-})();
-
 function showTooltip(e, name){
   tooltip.textContent = name;
   tooltip.style.left = e.clientX + 'px';
@@ -1871,29 +1845,154 @@ function showTooltip(e, name){
 }
 function hideTooltip(){ tooltip.classList.remove('show'); }
 
-// legend counts
-['bup','electronica','partidaria'].forEach(cat=>{
-  const n = PROVINCES.filter(p=>p.cat===cat).length;
-  document.getElementById('count-'+cat).textContent = n;
-});
+// ============ MAPA PRINCIPAL ============
+// El mapa de entrada ya no está fijo en "tipo de boleta": usa el mismo sistema
+// de 17 variables que el modo comparación, con un <select> propio arriba del
+// mapa. Boleta sigue siendo la variable por defecto al cargar la página.
+let mainVarId = 'boleta';
+function buildMainMap(){
+  const selectEl = document.getElementById('mainVarSelect');
+  const legendEl = document.getElementById('legend');
+  const titleEl = document.getElementById('mainTitle');
+  const titleSubEl = document.getElementById('mainTitleSub');
+  const hintTextEl = document.getElementById('mainHintText');
+  const elements = {};
+  let activeFilter = null;
 
-// filtering
-let activeFilter = null;
-document.querySelectorAll('.legend-item').forEach(item=>{
-  item.addEventListener('click', ()=>{
-    const cat = item.dataset.filter;
-    activeFilter = (activeFilter === cat) ? null : cat;
-    document.querySelectorAll('.legend-item').forEach(li=>{
-      li.classList.toggle('dim', activeFilter && li.dataset.filter !== activeFilter);
-    });
-    document.querySelectorAll('.province').forEach(c=>{
-      c.classList.toggle('faded', activeFilter && c.dataset.cat !== activeFilter);
-    });
-    document.querySelectorAll('.caba-pin').forEach(c=>{
-      c.classList.toggle('faded', activeFilter && c.dataset.cat !== activeFilter);
-    });
+  populateVariableSelect(selectEl);
+
+  PROVINCES.filter(p => p.id !== 'caba').forEach(p => {
+    const d = PROVINCE_D[p.id];
+    if(!d) return;
+    const el = document.createElementNS(SVG_NS, 'path');
+    el.setAttribute('d', d);
+    el.dataset.id = p.id;
+    el.addEventListener('click', ()=>openPanel(p));
+    el.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(el);
+    elements[p.id] = el;
   });
-});
+
+  // Islas Malvinas — parte de Tierra del Fuego; al hacer click abre la misma ficha provincial
+  const tdf = PROVINCES.find(p=>p.id==='tierradelfuego');
+  const dMalvinas = PROVINCE_D['malvinas'];
+  if(dMalvinas){
+    const el = document.createElementNS(SVG_NS, 'path');
+    el.setAttribute('d', dMalvinas);
+    el.dataset.id = 'malvinas';
+    el.addEventListener('click', ()=>openPanel(tdf));
+    el.addEventListener('mouseleave', hideTooltip);
+    svg.appendChild(el);
+    elements['malvinas'] = el;
+  }
+
+  // CABA pin — ubicada sobre la costa real de Buenos Aires (calibrada por lat/long), sin etiqueta de texto
+  const caba = PROVINCES.find(p=>p.id==='caba');
+  const g = document.createElementNS(SVG_NS,'g');
+  g.setAttribute('class','caba-pin');
+  g.dataset.id = 'caba';
+  const dot = document.createElementNS(SVG_NS,'circle');
+  dot.setAttribute('cx', 552.8); dot.setAttribute('cy', 79.3); dot.setAttribute('r', 18);
+  dot.setAttribute('class','caba-dot');
+  g.appendChild(dot);
+  g.addEventListener('click', ()=>openPanel(caba));
+  g.addEventListener('mouseleave', hideTooltip);
+  svg.appendChild(g);
+  elements['caba'] = g;
+  elements['caba_dot'] = dot;
+
+  function applyFilter(){
+    Object.keys(elements).forEach(id=>{
+      if(id === 'caba_dot') return;
+      const el = elements[id];
+      el.classList.toggle('faded', activeFilter && el.dataset.cat !== activeFilter);
+    });
+  }
+
+  function renderLegendCategorical(varDef){
+    legendEl.innerHTML = '';
+    Object.keys(varDef.categories).forEach(catKey=>{
+      const n = PROVINCES.filter(p=>valueOf(varDef,p)===catKey).length;
+      const item = document.createElement('div');
+      item.className = 'legend-item' + (activeFilter && activeFilter!==catKey ? ' dim' : '');
+      item.innerHTML = '<span class="swatch" style="background:var(--'+catKey+')"></span>'
+        + '<span class="legend-text"><b>'+varDef.categories[catKey]+'</b></span>'
+        + '<span class="legend-count">'+n+'</span>';
+      item.addEventListener('click', ()=>{
+        activeFilter = (activeFilter === catKey) ? null : catKey;
+        applyFilter();
+        renderLegendCategorical(varDef);
+      });
+      legendEl.appendChild(item);
+    });
+    hintTextEl.textContent = 'Seleccioná una categoría para filtrar el mapa, o tocá una provincia para ver su ficha completa.';
+  }
+
+  function renderLegendQuantitative(varDef){
+    legendEl.innerHTML = '';
+    const vals = PROVINCES.map(p=>valueOf(varDef,p));
+    const min = Math.min(...vals), max = Math.max(...vals);
+    const wrap = document.createElement('div');
+    wrap.className = 'compare-gradient-wrap';
+    const bar = document.createElement('div');
+    bar.className = 'compare-gradient-legend';
+    bar.innerHTML = '<span class="grad-min">'+formatQuantValue(varDef,min)+'</span>'
+      + '<span class="grad-bar" style="background:linear-gradient(90deg, '+colorFromT(0).color+', '+colorFromT(1).color+')"></span>'
+      + '<span class="grad-max">'+formatQuantValue(varDef,max)+'</span>';
+    wrap.appendChild(bar);
+    if(varDef.source){
+      const caption = document.createElement('p');
+      caption.className = 'grad-caption';
+      caption.textContent = 'Fuente: '+varDef.source+' · escala '+(varDef.scale==='rank' ? 'por orden' : 'logarítmica');
+      wrap.appendChild(caption);
+    }
+    legendEl.appendChild(wrap);
+    hintTextEl.textContent = 'Tocá una provincia para ver su ficha completa.';
+  }
+
+  function updateColors(varDef){
+    const isQuant = varDef.type === 'quantitative';
+    const allVals = isQuant ? PROVINCES.map(p=>valueOf(varDef,p)) : null;
+
+    function paint(id, p, isCabaEl){
+      const catVal = valueOf(varDef, p);
+      const el = isCabaEl ? elements['caba_dot'] : elements[id];
+      if(!el) return;
+      elements[isCabaEl ? 'caba' : id].dataset.cat = catVal;
+      if(isQuant){
+        const color = colorFromT(computeT(varDef, catVal, allVals)).color;
+        if(isCabaEl) el.style.fill = color;
+        else { el.setAttribute('class','province'); el.style.fill = color; }
+      } else {
+        if(isCabaEl) el.style.fill = 'var(--'+catVal+')';
+        else { el.setAttribute('class','province '+catVal); el.style.fill = ''; }
+      }
+      const label = p.id==='caba' ? 'CABA' : (id==='malvinas' ? 'Islas Malvinas (Tierra del Fuego)' : p.name);
+      const target = isCabaEl ? elements['caba'] : el;
+      target.onmousemove = (e)=>showTooltip(e, isQuant ? label+' — '+formatQuantValue(varDef,catVal) : label);
+    }
+
+    PROVINCES.filter(p=>p.id!=='caba').forEach(p=>paint(p.id, p, false));
+    if(elements['malvinas']) paint('malvinas', tdf, false);
+    paint('caba', caba, true);
+  }
+
+  function setVariable(varId){
+    const varDef = VARIABLES.find(v=>v.id===varId) || VARIABLES[0];
+    mainVarId = varDef.id;
+    activeFilter = null;
+    updateColors(varDef);
+    if(varDef.type === 'quantitative') renderLegendQuantitative(varDef);
+    else renderLegendCategorical(varDef);
+    applyFilter();
+    titleEl.childNodes[0].nodeValue = varDef.label;
+    titleSubEl.textContent = varDef.group || '';
+  }
+
+  selectEl.value = mainVarId;
+  selectEl.addEventListener('change', ()=> setVariable(selectEl.value));
+  setVariable(mainVarId);
+}
 
 // full-screen panel
 const scrim = document.getElementById('scrim');
@@ -1977,30 +2076,8 @@ function buildCompareMap(svgId, legendId, selectId, updatedId, initialVarId){
   }
 
   // Agrupa las variables por "group" en <optgroup> para que el selector se lea
-  // organizado por tipo, en vez de una lista plana de 14 opciones. Los <optgroup>
-  // nativos del navegador no admiten SVG/HTML en su label, solo texto, así que uso
-  // un pequeño símbolo por categoría a modo de ícono.
-  const GROUP_ICONS = {
-    "Sistema electoral": "🗳️",
-    "Resultados electorales": "📊",
-    "Demografía": "👥",
-    "Geografía": "🗺️",
-    "Desarrollo y economía": "💰"
-  };
-  const groupEls = {};
-  VARIABLES.forEach(v=>{
-    const groupName = v.group || "Otras";
-    if(!groupEls[groupName]){
-      groupEls[groupName] = document.createElement('optgroup');
-      const icon = GROUP_ICONS[groupName] ? GROUP_ICONS[groupName]+' ' : '';
-      groupEls[groupName].label = icon + groupName;
-      selectEl.appendChild(groupEls[groupName]);
-    }
-    const opt = document.createElement('option');
-    opt.value = v.id;
-    opt.textContent = v.label;
-    groupEls[groupName].appendChild(opt);
-  });
+  // organizado por tipo, en vez de una lista plana de 17 opciones.
+  populateVariableSelect(selectEl);
 
   function renderLegend(varDef){
     legendEl.innerHTML = '';
@@ -2886,7 +2963,12 @@ document.getElementById('storyExit').addEventListener('click', exitStoryMode);
   if(params.get('compare') === '1'){
     enterCompareMode(params.get('a'), params.get('b'));
   }
+  // ?v=idh abre el mapa principal directo en esa variable (si existe)
+  const v = params.get('v');
+  if(v && VARIABLES.some(vr=>vr.id===v)) mainVarId = v;
 })();
+
+buildMainMap();
 </script>
 </body>
 </html>
